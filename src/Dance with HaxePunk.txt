@@ -1,0 +1,10 @@
+creation state:
+handle touches
+  - record touch points for a limited time
+  - add circle sprite to show touch is working
+  - add a trail
+  - add indicator sprites for pressing and releasing
+  
+imitation state:
+  - replay touch points using all indicator sprites
+  - add score, a percentage of error over time
