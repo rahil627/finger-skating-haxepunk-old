@@ -16,15 +16,20 @@ class TouchSprite extends Entity
 {
 	private var trail:Trail;
 	private var touchID:Int;
+	public var recording:Bool;
+	public var record:Array<MovementData>;
 
 	public function new(x:Float = 0, y:Float = 0) 
 	{
 		super(x, y);
 		this.graphic = Image.createRect(50, 50, 0x0000FF);
 		this.setHitbox(50, 50);
+		this.type = "TouchSprite";
 		trail = new Trail();
 		HXP.scene.add(trail);
 		touchID = 0;
+		recording = false;
+		record = new Array<MovementData>;
 	}
 	
 	override public function update():Void 

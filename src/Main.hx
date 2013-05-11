@@ -1,6 +1,6 @@
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
-import src.scenes.Game;
+import scenes.CreationScene;
  
 class Main extends Engine {
     public function new() {
@@ -10,9 +10,9 @@ class Main extends Engine {
     override public function init():Dynamic {
         super.init();
         HXP.console.enable();
-        //trace("HaxePunk is running!");
+        trace("HaxePunk is running!");
 		//HXP.screen.scale = 1;
-		HXP.scene = new Game();
+		HXP.scene = new CreationScene();
     }
 	
     public static function main() {

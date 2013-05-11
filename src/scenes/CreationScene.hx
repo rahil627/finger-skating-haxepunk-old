@@ -16,19 +16,28 @@ import nme.display.Shape;
 import nme.display.Sprite;
 import nme.geom.Point;
 
+enum CreationSubScene {
+	begin;
+	create;
+	end;
+}
+
 /**
  * ...
  * @author Rahil Patel
  */
-class Game extends Scene
+class CreationScene extends Scene
 {
-	private var block:Entity;
-	private var dancer:Entity;
 	private var firstPress:Bool = false;
 	private var trail:Trail;
 	private var lastPointX:Int;
 	private var lastPointY:Int;
+	
+	private var bottomArea:Entity;
+	private var touchSprites:Array<TouchSprite>;
 	private var debugText:Text;
+	private var subScene:CreationSubScene;
+	private var recordingTime:Float;
 
 	public function new() 
 	{
@@ -38,27 +47,11 @@ class Game extends Scene
 	override public function begin():Dynamic 
 	{
 		super.begin();
-		//block = this.addGraphic(new Image("block.png")); // todo: argh
-		
-		
-		// performance test
-		// create 500 random sprites
-		//var entity:Entity;
-		//for (i in 0...500) 
-		//{
-			//entity = this.addGraphic(new Circle(10));
-			//entity.moveTo(HXP.random * HXP.screen.width, HXP.random * HXP.screen.height);
-		//}
-		
 		
 		Input.enable(); // todo: unsure if needed
 		
 		// add starting area
-		//var startingArea:this.add(new Entity(0, HXP.screen.height - 50, new Rect(HXP.screen.width, 50, 0x00FF00)));
-		
-		// add dancer
-		//this.add(dancer = new Entity(0, 0, new Circle(10, 0x0000FF)));
-		//dancer.name = "dancer";
+		this.add(bottomArea = new Entity(0, HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
 		
 		// add a bunch of touch sprites
 		this.add(new TouchSprite(50, 250));
@@ -67,6 +60,10 @@ class Game extends Scene
 		this.add(new TouchSprite(350, 250));
 		this.add(new TouchSprite(450, 250));
 		
+		// create a reference to the touch sprites
+		touchSprites = new Array<TouchSprite>();
+		this.getClass(TouchSprite, touchSprites);
+		
 		// add trail
 		//this.add(trail = new Trail()); // todo: should be an entity
 		//trail.name = "mouse trail";
@@ -74,62 +71,79 @@ class Game extends Scene
 		// add iOS debug text field
 		debugText = new Text("test");
 		this.add(new Entity(0, 100, debugText));
+		
+		subScene = CreationSubScene.begin;
+		recordingTime = 0;
 	}
 	
 	override public function update():Dynamic 
 	{
 		// check input
 		//if (Input.multiTouchSupported)
-			//Input.touchPoints(onTouch);
+			//Input.touchPoints(handleTouchInput);
 		//else
 			//handleMouseInput();
-		
-		
+	
 		// update entities
 		super.update();
 		
-		//block.moveBy(2, 1);
-		//dancer.moveBy(2, 1);
-		//for (i in 0...this.count) {
-			//this.
-		//}
-		
-		//Draw.setTarget(HXP.buffer, HXP.camera);
-		//Draw.lin
-		
-		//record touches
+		switch (subScene) 
+		{
+			case CreationSubScene.begin:
+			// when the player moves a sprite out of the starting area, the creation state begins
+			for (i in 0...touchSprites.length) {
+				if ((cast(touchSprites[i], TouchSprite)).y < bottomArea.y) {
+					this.remove(bottomArea); // todo: extra: fade out
+					for (j in 0...touchSprites.length) {
+						(cast(touchSprites[j], TouchSprite)).recording = true;
+					}
+					subScene = CreationSubScene.create;
+					break;
+				}
+			}
+			
+			
+			case CreationSubScene.create:
+			//when the player moves all of the sprites back to the starting area, the creation state ends
+			var numberOfTouchSpritesInBottomArea:Int = 0;
+			
+			for (i in 0...touchSprites.length) {
+				if ((cast(touchSprites[i], TouchSprite)).y > bottomArea.y) {
+					numberOfTouchSpritesInBottomArea++;
+				}
+			}
+			
+			if (numberOfTouchSpritesInBottomArea == touchSprites.length)
+				subScene = CreationSubScene.end;
+				
+			recordingTime += HXP.elapsed;
+			
+				
+			case CreationSubScene.end:
+			// pass the records of all touchsprites into the next state
+			var records:Array<Array<MovementData>> = new Array<Array<MovementData>>();
+			for (i in 0...touchSprites.length) {
+				records.push(cast(touchSprites[i], TouchSprite).record);
+			}
+			
+			HXP.scene = new ImitationScene(records, recordingTime);
+			
+			
+			default: // todo: not needed?
+				trace("switch fail");
+				
+		}
 		
 	}
 	
 	// todo: optimize: is this called per frame or any time?
-	private function onTouch(touch:Touch):Void // todo: dynamic or void?
+	private function handleToucbInput(touch:Touch):Void // todo: dynamic or void?
 	{		
-		debugText.text = Std.string(touch.id);
-			
-		
-		// save points
-		//Global.touches.push(touch);
-		
-		// draw stuff
-		if (touch.pressed) { // on press
-			this.add(new Entity(touch.x, touch.y, new Circle(10, 0x00FF00)));
-		}
-		
-		// how to get on release?
-		// would need to update Input
-		//if (touch.pressed) {
-			//this.add(new Entity(touch.x, touch.y, new Circle(10, 0xFF0000)));
-		//}
+		//debugText.text = Std.string(touch.id);
 	}
 	
-	// a copy of onTouch for debugging purposes
-	// todo: if debug
 	private function handleMouseInput():Void
 	{	 
-		// move sprite with touch
-		dancer.x = Input.mouseX;
-		dancer.y = Input.mouseY;
-		
 		// save points
 		//Global.touches.push(touch);
 		
@@ -158,13 +172,6 @@ class Game extends Scene
 	override public function render():Dynamic 
 	{
 		super.render();
-		
-		// draw a line (without using a bitmap) using HaxeNME
-		// performance test
-		//for (i in 0...5) 
-		//{
-			//Draw.linePlus(0, 0, 500 - i*50, 500, 0xFFFF0000, 1, 10);
-		//}
 	}
 	
 }
