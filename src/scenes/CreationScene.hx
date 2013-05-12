@@ -10,7 +10,7 @@ import com.haxepunk.Scene;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Touch;
-import entities.TouchSprite;
+import entities.TouchEntity;
 import entities.Trail;
 import nme.display.Shape;
 import nme.display.Sprite;
@@ -28,13 +28,8 @@ enum CreationSubScene {
  */
 class CreationScene extends Scene
 {
-	private var firstPress:Bool = false;
-	private var trail:Trail;
-	private var lastPointX:Int;
-	private var lastPointY:Int;
-	
 	private var bottomArea:Entity;
-	private var touchSprites:Array<TouchSprite>;
+	private var touchSprites:Array<TouchEntity>;
 	private var debugText:Text;
 	private var subScene:CreationSubScene;
 	private var recordingTime:Float;
@@ -54,15 +49,15 @@ class CreationScene extends Scene
 		this.add(bottomArea = new Entity(0, HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
 		
 		// add a bunch of touch sprites
-		this.add(new TouchSprite(50, 250));
-		this.add(new TouchSprite(150, 250));
-		this.add(new TouchSprite(250, 250));
-		this.add(new TouchSprite(350, 250));
-		this.add(new TouchSprite(450, 250));
+		this.add(new TouchEntity(50, 250));
+		this.add(new TouchEntity(150, 250));
+		this.add(new TouchEntity(250, 250));
+		this.add(new TouchEntity(350, 250));
+		this.add(new TouchEntity(450, 250));
 		
 		// create a reference to the touch sprites
-		touchSprites = new Array<TouchSprite>();
-		this.getClass(TouchSprite, touchSprites);
+		touchSprites = new Array<TouchEntity>();
+		this.getClass(TouchEntity, touchSprites);
 		
 		// add trail
 		//this.add(trail = new Trail()); // todo: should be an entity
@@ -77,13 +72,8 @@ class CreationScene extends Scene
 	}
 	
 	override public function update():Dynamic 
-	{
+	{	
 		// check input
-		//if (Input.multiTouchSupported)
-			//Input.touchPoints(handleTouchInput);
-		//else
-			//handleMouseInput();
-	
 		// update entities
 		super.update();
 		
@@ -92,10 +82,10 @@ class CreationScene extends Scene
 			case CreationSubScene.begin:
 			// when the player moves a sprite out of the starting area, the creation state begins
 			for (i in 0...touchSprites.length) {
-				if ((cast(touchSprites[i], TouchSprite)).y < bottomArea.y) {
+				if ((cast(touchSprites[i], TouchEntity)).y < bottomArea.y) {
 					this.remove(bottomArea); // todo: extra: fade out
 					for (j in 0...touchSprites.length) {
-						(cast(touchSprites[j], TouchSprite)).recording = true;
+						(cast(touchSprites[j], TouchEntity)).recording = true;
 					}
 					subScene = CreationSubScene.create;
 					break;
@@ -108,7 +98,7 @@ class CreationScene extends Scene
 			var numberOfTouchSpritesInBottomArea:Int = 0;
 			
 			for (i in 0...touchSprites.length) {
-				if ((cast(touchSprites[i], TouchSprite)).y > bottomArea.y) {
+				if ((cast(touchSprites[i], TouchEntity)).y > bottomArea.y) {
 					numberOfTouchSpritesInBottomArea++;
 				}
 			}
@@ -123,7 +113,7 @@ class CreationScene extends Scene
 			// pass the records of all touchsprites into the next state
 			var records:Array<Array<MovementData>> = new Array<Array<MovementData>>();
 			for (i in 0...touchSprites.length) {
-				records.push(cast(touchSprites[i], TouchSprite).record);
+				records.push(cast(touchSprites[i], TouchEntity).record);
 			}
 			
 			HXP.scene = new ImitationScene(records, recordingTime);
@@ -134,39 +124,6 @@ class CreationScene extends Scene
 				
 		}
 		
-	}
-	
-	// todo: optimize: is this called per frame or any time?
-	private function handleToucbInput(touch:Touch):Void // todo: dynamic or void?
-	{		
-		//debugText.text = Std.string(touch.id);
-	}
-	
-	private function handleMouseInput():Void
-	{	 
-		// save points
-		//Global.touches.push(touch);
-		
-		// draw stuff
-		if (Input.mouseDown) {
-			//draw a line
-			//trail.graphics.
-			
-			//Draw.linePlus(lastPointX, lastPointY, Input.mouseX, Input.mouseY, 0xFFFFF00, .5, 5);
-			
-			lastPointX = Input.mouseX;
-			lastPointY = Input.mouseY;
-			
-			trail.points.push(new Point(Input.mouseX, Input.mouseY));
-		}
-		
-		if (Input.mousePressed) {
-			this.add(new Entity(Input.mouseX, Input.mouseY, new Circle(10, 0x00FF00)));
-		}
-		
-		if (Input.mouseReleased) {
-			this.add(new Entity(Input.mouseX, Input.mouseY, new Circle(10, 0xFF0000)));
-		}
 	}
 	
 	override public function render():Dynamic 

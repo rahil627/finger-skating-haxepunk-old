@@ -56,7 +56,7 @@ class Trail extends Entity
 		if (points.length < 2)
 			return;
 			
-		if (points.length > 100)
+		if (points.length > 15)
 			points.remove(points.last());
 		
 		sprite.graphics.clear();
