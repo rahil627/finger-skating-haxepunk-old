@@ -18,24 +18,26 @@ class Trail extends Entity
 	
 	// need to either add a Sprite to HXP.stage or HXP.engine
 	
-	// add a single Sprite for everything to draw to, like the effects layer in HaxeFlixel
+	// todo: add a single Sprite for everything to draw to, like the effects layer in HaxeFlixel
 	
 	// use addChildAt to order the sprites
+	public var points:List<Point>;
 	
 	private var sprite:Sprite;
-	public var points:List<Point>;
+	private var maxPointsLength:Int;
 	
 	/**
 	 * to use, just add points to points
 	 */
-	public function new()
+	public function new(maxPointsLength:Int = 15)
 	{
 		super();
 		sprite = new Sprite();
 		HXP.stage.addChild(sprite);
 		points = new List<Point>();
+		this.maxPointsLength = maxPointsLength;
 		
-		sprite.graphics.lineStyle(10, 0x00FF00);
+		sprite.graphics.lineStyle(10, 0xFFFFFF, .5);
 	}
 	
 	override public function added():Void 
@@ -56,11 +58,11 @@ class Trail extends Entity
 		if (points.length < 2)
 			return;
 			
-		if (points.length > 15)
+		if (points.length > maxPointsLength)
 			points.remove(points.last());
 		
 		sprite.graphics.clear();
-		sprite.graphics.lineStyle(10, 0x00FF00);
+		sprite.graphics.lineStyle(10, 0xFFFFFF, .5);
 		
 		for (p in points) 
 		{

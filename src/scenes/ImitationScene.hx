@@ -24,7 +24,7 @@ class ImitationScene extends Scene
 	private var recordingTime:Float;
 	private var ghostSpriteRespawnTimer:Float;
 	private var ghosts:Array<Ghost>;
-	private var touchSprites:Array<TouchEntity>;
+	private var touchEntities:Array<TouchEntity>;
 	private var imitationSubState:ImitationSubState;
 	private var bottomArea:Entity;
 	private var percentage:Entity;
@@ -44,40 +44,39 @@ class ImitationScene extends Scene
 		imitationTimer = 0;
 		currentFrameHitPercentTotal = 1;
 		winThreshold = .90;
+	}
+	
+	override public function begin():Dynamic 
+	{
+		super.begin();
 		
-		// add bottom area
-		this.add(bottomArea = new Entity(0, HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
+		// add starting / ending area
+		this.add(bottomArea = new Entity(0, HXP.screen.height - HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
 		
 		// add ghosts that wait until the player touches it		
+		ghosts = new Array<Ghost>();
 		for (i in 0...records.length) 
 		{
 			ghosts.push(new Ghost(records[i], false));
 		}
 		
-		// save references to the ghosts
-		ghosts = new Array<Ghost>();
-		this.getClass(Ghost, ghosts);
-		
 		// add same number of touch sprites used in the recording
-		var touchSprite:TouchEntity;
+		touchEntities = new Array<TouchEntity>();
+		var touchEntity:TouchEntity;
 		for (i in 0...records.length) 
 		{
-			touchSprite = new TouchEntity();
-			touchSprite.x = records[i][0].x;
-			touchSprite.y = bottomArea.y - bottomArea.height / 2 + touchSprite.height;
-			touchSprites.push(touchSprite);
+			touchEntity = new TouchEntity();
+			touchEntity.x = records[i][0].x;
+			touchEntity.y = bottomArea.y - bottomArea.height / 2 + touchEntity.height;
+			touchEntities.push(touchEntity);
 		}
-		
-		// save references to the touch sprites
-		touchSprites = new Array<TouchEntity>();
-		this.getClass(TouchEntity, touchSprites);
 		
 		// show percentage at the bottom
 		percentageText = new Text("0%");
 		percentageText.scale = 5;
 		percentage = new Entity(0, 0, percentageText);
 		percentage.x = HXP.width / 2 + 25;
-		percentage.y = HXP.height - 50; // todo: percentageText.height = 1, send bug to HaxeFlixel, or send fix myself
+		percentage.y = HXP.height - percentageText.scaledHeight;
 		this.add(percentage);
 	}
 	

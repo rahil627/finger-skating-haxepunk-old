@@ -16,8 +16,7 @@ class Global
 	public static var mousePressedOnTouchSprite:TouchEntity;
 	
 	// graphics
-	//[Embed(source = '../assets/graphics/white_rectangle_50x50.png')]
-	//public static inline GRAPHIC_WHITE_RECTANGLE_50x50:Class; // inline = const?
+	public static var GRAPHIC_WHITE_RECTANGLE_50x50:String = "assets/graphics/white_rectangle_50x50.png"; // inline = const?
 }
 
 enum Turn {

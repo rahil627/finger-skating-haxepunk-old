@@ -26,6 +26,7 @@
 	
 	 <!-- assets -->
     <assets path="assets/graphics" rename="gfx" include="*.png|*.jpg" />
+	<assets path="assets/graphics" type="image" include="*.png" />
     <assets path="assets/audio" rename="sfx" include="*.mp3" if="flash" />
     <assets path="assets/audio" rename="sfx" include="*.wav|*.ogg" unless="flash" />
     <assets path="assets/font" rename="font" include="*.ttf" />

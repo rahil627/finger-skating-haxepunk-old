@@ -37,6 +37,8 @@ class CreationScene extends Scene
 	public function new() 
 	{
 		super();
+		subScene = CreationSubScene.begin;
+		recordingTime = 0;
 	}
 	
 	override public function begin():Dynamic 
@@ -62,9 +64,6 @@ class CreationScene extends Scene
 		// add iOS debug text field
 		debugText = new Text("test");
 		this.add(new Entity(0, 100, debugText));
-		
-		subScene = CreationSubScene.begin;
-		recordingTime = 0;
 	}
 	
 	override public function update():Dynamic 

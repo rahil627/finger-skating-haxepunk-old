@@ -24,9 +24,7 @@ class TouchEntity extends Entity
 
 	public function new(x:Float = 0, y:Float = 0) 
 	{
-		var bd:BitmapData = new BitmapData(50, 50, true, 0xFF0000FF);
-		var image:Image = new Image(bd);
-		//var image:Image = new Image("graphics/white_rectangle_50x50.png"); // todo: not working, asked on forums
+		var image:Image = new Image(Global.GRAPHIC_WHITE_RECTANGLE_50x50);
 		image.centerOrigin();
 		super(x + image.width / 2, y + image.height / 2, image);
 		this.setHitbox(50, 50);
@@ -61,7 +59,7 @@ class TouchEntity extends Entity
 		}
 		
 		// store trail points
-		trail.points.push(new Point(this.x, this.y)); // todo: need to fix, match HaxeFlixel version
+		trail.points.push(new Point(this.x, this.y));
 	}
 	
 	// handle touch input seperately
@@ -91,7 +89,6 @@ class TouchEntity extends Entity
 	
 	private function handleMouseInput():Void
 	{	
-		// todo: need to associate mouse with sprite
 		if (Input.mousePressed && this.collidePoint(this.x, this.y, Input.mouseX, Input.mouseY) && Global.mousePressedOnTouchSprite == null) { // haXe magic!
 			// save sprite reference in Global
 			Global.mousePressedOnTouchSprite = this;
