@@ -22,12 +22,15 @@ class TouchEntity extends Entity // could not use Touch because it's taken
 
 	public function new(x:Float = 0, y:Float = 0) 
 	{
-		var image:Image = new Image(Global.GRAPHIC_WHITE_RECTANGLE_50x50);
-		image.centerOrigin();
+		var image:Image = new Image(Global.GRAPHIC_WHITE_PIXEL);
+		image.scale = 25;
+		image.originX += .5;
+		image.originY += .5;
+		//image.centerOrigin(); // todo: HaxePunk bug: should use scaledwidth and scaledheight
+		image.color = 0x0000FF;
 		super(x + image.width / 2, y + image.height / 2, image);
-		this.setHitbox(50, 50);
+		this.setHitbox(25, 25);
 		this.centerOrigin();
-		this.type = "TouchEntity";
 		
 		trail = new Trail();
 		HXP.scene.add(trail);

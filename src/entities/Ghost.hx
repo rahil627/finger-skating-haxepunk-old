@@ -28,10 +28,14 @@ class Ghost extends Entity
 	public function new(record:Array<MovementData>, playing:Bool = true) 
 	{
 		super();
-		image = new Image(Global.GRAPHIC_WHITE_RECTANGLE_50x50);
-		image.centerOrigin();
+		image = new Image(Global.GRAPHIC_WHITE_PIXEL);
+		image.scale = 25;
+		image.originX += .5;
+		image.originY += .5;
+		//image.centerOrigin();
+		image.color = 0xFFFFFF;
 		this.graphic = image;
-		this.setHitbox(50, 50);
+		this.setHitbox(25, 25);
 		this.centerOrigin();
 		
 		this.record = record;

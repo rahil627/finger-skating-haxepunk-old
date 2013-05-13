@@ -46,7 +46,7 @@ class CreationScene extends Scene
 		touchEntities = new Array<TouchEntity>();
 		var touchEntity:TouchEntity;
 		for (i in 0...5)  {
-			touchEntity = new TouchEntity(i * 100, bottomArea.y + bottomArea.height / 2);
+			touchEntity = new TouchEntity((i + 1) * HXP.screen.width / 6, bottomArea.y + bottomArea.height / 2);
 			touchEntities.push(touchEntity);
 			this.add(touchEntity);
 		}
