@@ -29,7 +29,7 @@ enum CreationSubScene {
 class CreationScene extends Scene
 {
 	private var bottomArea:Entity;
-	private var touchSprites:Array<TouchEntity>;
+	private var touchEntities:Array<TouchEntity>;
 	private var debugText:Text;
 	private var subScene:CreationSubScene;
 	private var recordingTime:Float;
@@ -45,23 +45,19 @@ class CreationScene extends Scene
 		
 		Input.enable(); // todo: unsure if needed
 		
-		// add starting area
-		this.add(bottomArea = new Entity(0, HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
+		// add starting / ending area
+		this.add(bottomArea = new Entity(0, HXP.screen.height - HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
 		
-		// add a bunch of touch sprites
-		this.add(new TouchEntity(50, 250));
-		this.add(new TouchEntity(150, 250));
-		this.add(new TouchEntity(250, 250));
-		this.add(new TouchEntity(350, 250));
-		this.add(new TouchEntity(450, 250));
+		// add a bunch of touch entities
+		touchEntities = new Array<TouchEntity>();
+		var touchEntity:TouchEntity;
+		for (i in 0...5)  {
+			touchEntity = new TouchEntity(i * 100, bottomArea.y + bottomArea.height / 2);
+			touchEntities.push(touchEntity);
+			this.add(touchEntity);
+		}
 		
-		// create a reference to the touch sprites
-		touchSprites = new Array<TouchEntity>();
-		this.getClass(TouchEntity, touchSprites);
-		
-		// add trail
-		//this.add(trail = new Trail()); // todo: should be an entity
-		//trail.name = "mouse trail";
+		//this.getClass(TouchEntity, touchEntities); // probably does not work until the next frame
 		
 		// add iOS debug text field
 		debugText = new Text("test");
@@ -80,12 +76,12 @@ class CreationScene extends Scene
 		switch (subScene) 
 		{
 			case CreationSubScene.begin:
-			// when the player moves a sprite out of the starting area, the creation state begins
-			for (i in 0...touchSprites.length) {
-				if ((cast(touchSprites[i], TouchEntity)).y < bottomArea.y) {
-					this.remove(bottomArea); // todo: extra: fade out
-					for (j in 0...touchSprites.length) {
-						(cast(touchSprites[j], TouchEntity)).recording = true;
+			// when the player moves an entity out of the starting area, the creation state begins
+			for (i in 0...touchEntities.length) {
+				if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
+					this.remove(bottomArea);
+					for (j in 0...touchEntities.length) {
+						(cast(touchEntities[j], TouchEntity)).recording = true;
 					}
 					subScene = CreationSubScene.create;
 					break;
@@ -94,26 +90,26 @@ class CreationScene extends Scene
 			
 			
 			case CreationSubScene.create:
-			//when the player moves all of the sprites back to the starting area, the creation state ends
+			// when the player moves all of the entities back to the starting area, the creation state ends
 			var numberOfTouchSpritesInBottomArea:Int = 0;
 			
-			for (i in 0...touchSprites.length) {
-				if ((cast(touchSprites[i], TouchEntity)).y > bottomArea.y) {
+			for (i in 0...touchEntities.length) {
+				if ((cast(touchEntities[i], TouchEntity)).y > bottomArea.y) {
 					numberOfTouchSpritesInBottomArea++;
 				}
 			}
 			
-			if (numberOfTouchSpritesInBottomArea == touchSprites.length)
+			if (numberOfTouchSpritesInBottomArea == touchEntities.length)
 				subScene = CreationSubScene.end;
 				
 			recordingTime += HXP.elapsed;
 			
 				
 			case CreationSubScene.end:
-			// pass the records of all touchsprites into the next state
+			// pass the records of all touch entities into the next state
 			var records:Array<Array<MovementData>> = new Array<Array<MovementData>>();
-			for (i in 0...touchSprites.length) {
-				records.push(cast(touchSprites[i], TouchEntity).record);
+			for (i in 0...touchEntities.length) {
+				records.push(cast(touchEntities[i], TouchEntity).record);
 			}
 			
 			HXP.scene = new ImitationScene(records, recordingTime);

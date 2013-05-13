@@ -26,9 +26,9 @@ class TouchEntity extends Entity
 	{
 		var bd:BitmapData = new BitmapData(50, 50, true, 0xFF0000FF);
 		var image:Image = new Image(bd);
-		//var image:Image = new Image("graphics/white_rectangle_50x50.png"); // fail
+		//var image:Image = new Image("graphics/white_rectangle_50x50.png"); // todo: not working, asked on forums
 		image.centerOrigin();
-		super(x, y, image);
+		super(x + image.width / 2, y + image.height / 2, image);
 		this.setHitbox(50, 50);
 		this.centerOrigin();
 		this.type = "TouchEntity";
@@ -70,7 +70,6 @@ class TouchEntity extends Entity
 		if (touch.pressed && this.collidePoint(this.x, this.y, touch.x, touch.y)) {
 			
 			// associate the sprite to the touch, emulating swallow touch
-			//if (touch.id == 0)
 			HXP.log(touch.id);
 			touchID = touch.id;
 			
@@ -88,8 +87,6 @@ class TouchEntity extends Entity
 		
 		// on release
 		// todo: need to write code for touch.released
-		// if (
-		// touch.id = 0;
 	}
 	
 	private function handleMouseInput():Void
