@@ -1,19 +1,17 @@
 package entities;
 
 import com.haxepunk.Entity;
-import com.haxepunk.Graphic;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.HXP;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Touch;
-import nme.display.BitmapData;
 import nme.geom.Point;
 
 /**
  * ...
  * @author Rahil Patel
  */
-class TouchEntity extends Entity
+class TouchEntity extends Entity // could not use Touch because it's taken
 {
 	private var trail:Trail;
 	private var touchID:Int;

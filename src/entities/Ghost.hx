@@ -6,13 +6,13 @@ import com.haxepunk.HXP;
 import nme.geom.Point;
 
 /**
- * ...
+ * GhostSprite moves according to the record it's given
  * @author Rahil Patel
  */
 class Ghost extends Entity
 {
 	private var record:Array<MovementData>;
-	private var playing:Bool;
+	public var playing:Bool;
 	private var recordIterator:Int;
 	private var _touching:Bool;
 	public var touching(get_touching, set_touching):Bool;
@@ -25,7 +25,7 @@ class Ghost extends Entity
 	private var image:Image;
 	private var trail:Trail;
 
-	public function new(record:Array<MovementData>, playing:Bool) 
+	public function new(record:Array<MovementData>, playing:Bool = true) 
 	{
 		super();
 		image = new Image(Global.GRAPHIC_WHITE_RECTANGLE_50x50);
@@ -46,7 +46,7 @@ class Ghost extends Entity
 		this.y = record[recordIterator].y;
 		recordIterator++;
 		
-		trail = new Trail(1000000);
+		trail = new Trail(1000000); // todo: optimize: save sprite as bitmap and draw to screen
 		for (i in 0...record.length) {
 			trail.points.push(new Point(record[i].x, record[i].y));
 		}

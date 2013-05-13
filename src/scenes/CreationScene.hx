@@ -1,20 +1,12 @@
 package scenes;
+
 import com.haxepunk.Entity;
-import com.haxepunk.Graphic;
-import com.haxepunk.graphics.Image;
-import com.haxepunk.graphics.prototype.Circle;
 import com.haxepunk.graphics.prototype.Rect;
 import com.haxepunk.graphics.Text;
 import com.haxepunk.HXP;
 import com.haxepunk.Scene;
-import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
-import com.haxepunk.utils.Touch;
 import entities.TouchEntity;
-import entities.Trail;
-import nme.display.Shape;
-import nme.display.Sprite;
-import nme.geom.Point;
 
 enum CreationSubScene {
 	begin;
