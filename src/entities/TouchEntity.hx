@@ -39,6 +39,12 @@ class TouchEntity extends Entity // could not use Touch because it's taken
 		recordingFrame = 0;
 	}
 	
+	override public function removed():Void 
+	{
+		super.removed();
+		HXP.scene.remove(trail);
+	}
+	
 	override public function update():Void 
 	{
 		super.update();

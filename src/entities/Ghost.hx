@@ -53,6 +53,12 @@ class Ghost extends Entity
 		HXP.scene.add(trail); // called when added to scene, should override added?
 	}
 	
+	override public function removed():Void 
+	{
+		super.removed();
+		HXP.scene.remove(trail);
+	}
+	
 	override public function update():Void 
 	{
 		super.update();

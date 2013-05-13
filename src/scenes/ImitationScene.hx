@@ -55,9 +55,12 @@ class ImitationScene extends Scene
 		
 		// add ghosts that wait until the player touches it		
 		ghosts = new Array<Ghost>();
+		var ghost:Ghost;
 		for (i in 0...records.length) 
 		{
-			ghosts.push(new Ghost(records[i], false));
+			ghost = new Ghost(records[i], false);
+			this.add(ghost);
+			ghosts.push(ghost);
 		}
 		
 		// add same number of touch entities used in the recording
@@ -68,6 +71,7 @@ class ImitationScene extends Scene
 			touchEntity = new TouchEntity();
 			touchEntity.x = records[i][0].x;
 			touchEntity.y = bottomArea.y - bottomArea.height / 2 + touchEntity.height;
+			this.add(touchEntity);
 			touchEntities.push(touchEntity);
 		}
 		
@@ -141,7 +145,7 @@ class ImitationScene extends Scene
 		
 		currentFrameHitPercentTotal = currentFrameHitPercentTotal / ghosts.length;
 		
-		percentageText.text = Std.string(currentFrameHitPercentTotal); // should be like Super Smash Bros. hit percent, or even better, a picture, a bar that fills up, something related to the design of the game
+		percentageText.text = Std.string(currentFrameHitPercentTotal) + "%"; // should be like Super Smash Bros. hit percent, or even better, a picture, a bar that fills up, no, something related to the design of the game
 		
 		// change color of text to indicate if the player is winning or not
 		if (currentFrameHitPercentTotal > winThreshold) {

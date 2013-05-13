@@ -16,7 +16,7 @@ class Global
 	public static var mousePressedOnTouchSprite:TouchEntity;
 	
 	// graphics
-	public static var GRAPHIC_WHITE_RECTANGLE_50x50:String = "assets/graphics/white_rectangle_50x50.png"; // inline = const?
+	public static var GRAPHIC_WHITE_RECTANGLE_50x50:String = "assets/graphics/white_rectangle_50x50.png"; // static inline = const? only works within this class?
 }
 
 enum Turn {
