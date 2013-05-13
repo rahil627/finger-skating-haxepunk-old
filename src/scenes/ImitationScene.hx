@@ -76,7 +76,8 @@ class ImitationScene extends Scene
 		}
 		
 		// show percentage at the bottom
-		percentageText = new Text("0%");
+		percentageText = new Text("000%"); // set the width of the text
+		percentageText.text = "0%";
 		percentageText.scale = 5;
 		percentage = new Entity(0, 0, percentageText);
 		percentage.x = HXP.width / 2 + 25;
@@ -130,11 +131,12 @@ class ImitationScene extends Scene
 		// while the player imitates, the ghost sprite should change color to indicate success or failure
 		
 		currentFrameHitPercentTotal = 0;
+		var currentFrameHitPercentSum:Float = 0;
 		
 		for (i in 0...touchEntities.length) {
-			cast(ghosts[i], Ghost).touching = (cast(touchEntities[i], TouchEntity).collideWith(ghosts[i], cast(ghosts[i], Ghost).x, cast(ghosts[i], Ghost).y)) != null;
+			cast(ghosts[i], Ghost).touching = (cast(touchEntities[i], TouchEntity).collideWith(ghosts[i], cast(touchEntities[i], TouchEntity).x, cast(touchEntities[i], TouchEntity).y)) != null;
 			
-			currentFrameHitPercentTotal += cast(ghosts[i], Ghost).currentFrameHitPercent;
+			currentFrameHitPercentSum += cast(ghosts[i], Ghost).currentFrameHitPercent;
 		}
 		
 		// a score in percentage is calculated
@@ -143,9 +145,10 @@ class ImitationScene extends Scene
 		
 		// the number of frames or time can be divided equally. When the creation state starts, assert that all of the sprites begin recording, whether it is in the starting area or not. The recording stops the total recording time is up.
 		
-		currentFrameHitPercentTotal = currentFrameHitPercentTotal / ghosts.length;
+		currentFrameHitPercentTotal = currentFrameHitPercentSum / ghosts.length;
+		HXP.log(currentFrameHitPercentTotal, ghosts.length);
 		
-		percentageText.text = Std.string(currentFrameHitPercentTotal) + "%"; // should be like Super Smash Bros. hit percent, or even better, a picture, a bar that fills up, no, something related to the design of the game
+		percentageText.text = Std.string(currentFrameHitPercentTotal * 100).substr(0, 3) + "%"; // should be like Super Smash Bros. hit percent, or even better, a picture, a bar that fills up, no, something related to the design of the game
 		
 		// change color of text to indicate if the player is winning or not
 		if (currentFrameHitPercentTotal > winThreshold) {
