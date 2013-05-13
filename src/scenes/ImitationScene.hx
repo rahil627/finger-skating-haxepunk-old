@@ -5,6 +5,7 @@ import com.haxepunk.graphics.prototype.Rect;
 import com.haxepunk.graphics.Text;
 import com.haxepunk.HXP;
 import com.haxepunk.Scene;
+import com.haxepunk.utils.Input;
 import entities.Ghost;
 import entities.TouchEntity;
 
@@ -165,6 +166,9 @@ class ImitationScene extends Scene
 		//if (FlxG.touchManager.touches.length > 0 || FlxG.mouse.justReleased()) {
 			//FlxG.switchState(new CreationState());
 		//}
+		
+		if (Input.mouseReleased)
+			HXP.scene = new CreationScene();
 		
 		default: // todo: not needed? Check HaXe syntax web page
 			trace("switch fail");
