@@ -24,6 +24,7 @@ class Ghost extends Entity
 	public var currentFrameHitPercent:Float;
 	private var image:Image;
 	private var path:Path;
+	private var showPath:Bool;
 
 	public function new(record:Array<MovementData>, playing:Bool = true, showPath:Bool = true) 
 	{
@@ -40,6 +41,7 @@ class Ghost extends Entity
 		
 		this.record = record;
 		this.playing = playing;
+		this.showPath = showPath;
 		
 		currentFrameHits = 0;
 		currentFrameTotal = 0;
@@ -54,12 +56,15 @@ class Ghost extends Entity
 		for (i in 0...record.length) {
 			path.points.push(new Point(record[i].x, record[i].y));
 		}
-		HXP.scene.add(path); // called when added to scene, should override added?
+		
+		if (showPath)
+			HXP.scene.add(path); // called when added to scene, should override added?
 	}
 	
 	override public function removed():Void 
 	{
-		HXP.scene.remove(path);
+		if (showPath)
+			HXP.scene.remove(path);
 		super.removed();
 	}
 	

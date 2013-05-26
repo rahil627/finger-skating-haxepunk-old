@@ -181,7 +181,7 @@ class ImitationScene extends Scene
 			GhostRespawnTimer = 0;
 			for (i in 0...records.length) 
 			{
-				this.add(new Ghost(records[i]));
+				this.add(new Ghost(records[i], true, false));
 			}
 		}
 	}
