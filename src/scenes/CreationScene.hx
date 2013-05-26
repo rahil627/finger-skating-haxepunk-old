@@ -39,23 +39,26 @@ class CreationScene extends Scene
 		
 		Input.enable(); // todo: unsure if needed
 		
+		// add iOS debug text field
+		debugText = new Text("test");
+		this.add(new Entity(0, 100, debugText));
+		
+		debugText.text = "HXP.width: " + HXP.width +  ", HXP.height: " + HXP.height
+			+ ", HXP.screen.width: " + HXP.screen.width + "HXP.screen.height: " + HXP.screen.height;
+		
 		// add starting / ending area
-		this.add(bottomArea = new Entity(0, HXP.screen.height - HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
+		this.add(bottomArea = new Entity(0, HXP.height - HXP.height / 10, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
 		
 		// add a bunch of touch entities
 		touchEntities = new Array<TouchEntity>();
 		var touchEntity:TouchEntity;
 		for (i in 0...5)  {
-			touchEntity = new TouchEntity((i + 1) * HXP.screen.width / 6, bottomArea.y + bottomArea.height / 2);
+			touchEntity = new TouchEntity((i + 1) * HXP.width / 6, bottomArea.y + bottomArea.height / 2);
 			touchEntities.push(touchEntity);
 			this.add(touchEntity);
 		}
 		
 		//this.getClass(TouchEntity, touchEntities); // probably does not work until the next frame
-		
-		// add iOS debug text field
-		debugText = new Text("test");
-		this.add(new Entity(0, 100, debugText));
 	}
 	
 	override public function update():Dynamic 

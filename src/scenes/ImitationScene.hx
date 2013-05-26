@@ -147,7 +147,7 @@ class ImitationScene extends Scene
 		// the number of frames or time can be divided equally. When the creation state starts, assert that all of the sprites begin recording, whether it is in the starting area or not. The recording stops the total recording time is up.
 		
 		currentFrameHitPercentTotal = currentFrameHitPercentSum / ghosts.length;
-		HXP.log(currentFrameHitPercentTotal, ghosts.length);
+		//HXP.log(currentFrameHitPercentTotal, ghosts.length);
 		
 		percentageText.text = Std.string(currentFrameHitPercentTotal * 100).substr(0, 3) + "%"; // should be like Super Smash Bros. hit percent, or even better, a picture, a bar that fills up, no, something related to the design of the game
 		

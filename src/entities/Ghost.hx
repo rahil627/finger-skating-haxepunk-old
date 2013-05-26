@@ -50,7 +50,7 @@ class Ghost extends Entity
 		this.y = record[recordIterator].y;
 		recordIterator++;
 		
-		trail = new Trail(1000000); // todo: optimize: save sprite as bitmap and draw to screen
+		trail = new Trail(1000000, true); // todo: optimize: save sprite as bitmap and draw to screen
 		for (i in 0...record.length) {
 			trail.points.push(new Point(record[i].x, record[i].y));
 		}
@@ -59,8 +59,8 @@ class Ghost extends Entity
 	
 	override public function removed():Void 
 	{
-		super.removed();
 		HXP.scene.remove(trail);
+		super.removed();
 	}
 	
 	override public function update():Void 

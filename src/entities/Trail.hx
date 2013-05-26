@@ -25,17 +25,20 @@ class Trail extends Entity
 	
 	private var sprite:Sprite;
 	private var maxPointsLength:Int;
+	private var drawOnce:Bool;
+	private var drawn:Bool = false;
 	
 	/**
 	 * to use, just add points to points
 	 */
-	public function new(maxPointsLength:Int = 15)
+	public function new(maxPointsLength:Int = 15, drawOnce:Bool = false)
 	{
 		super();
 		sprite = new Sprite();
 		HXP.stage.addChild(sprite);
 		points = new List<Point>();
 		this.maxPointsLength = maxPointsLength;
+		this.drawOnce = drawOnce;
 		
 		sprite.graphics.lineStyle(10, 0xFFFFFF, .5);
 	}
@@ -47,13 +50,16 @@ class Trail extends Entity
 	
 	override public function removed():Void 
 	{
-		super.removed();
 		HXP.stage.removeChild(sprite);
+		super.removed();
 	}
 	
 	override public function update():Void 
 	{
 		super.update();
+		
+		if (drawn)
+			return;
 		
 		if (points.length < 2)
 			return;
@@ -74,6 +80,9 @@ class Trail extends Entity
 			sprite.graphics.lineTo(p.x, p.y);
 			sprite.graphics.moveTo(p.x, p.y);
 		}
+		
+		if (drawOnce)
+			drawn = true;
 	}
 	
 	override public function render():Void 

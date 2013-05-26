@@ -23,13 +23,13 @@ class TouchEntity extends Entity // could not use Touch because it's taken
 	public function new(x:Float = 0, y:Float = 0) 
 	{
 		var image:Image = new Image(Global.GRAPHIC_WHITE_PIXEL);
-		image.scale = 25;
+		image.scale = 50;
 		image.originX += .5;
 		image.originY += .5;
 		//image.centerOrigin(); // todo: HaxePunk bug: should use scaledwidth and scaledheight
 		image.color = 0x0000FF;
 		super(x + image.width / 2, y + image.height / 2, image);
-		this.setHitbox(25, 25);
+		this.setHitbox(50, 50);
 		this.centerOrigin();
 		
 		trail = new Trail();
@@ -44,8 +44,8 @@ class TouchEntity extends Entity // could not use Touch because it's taken
 	
 	override public function removed():Void 
 	{
-		super.removed();
 		HXP.scene.remove(trail);
+		super.removed();
 	}
 	
 	override public function update():Void 
@@ -69,18 +69,22 @@ class TouchEntity extends Entity // could not use Touch because it's taken
 		trail.points.push(new Point(this.x, this.y));
 	}
 	
-	// handle touch input seperately
+	// handle touch input separately // todo: if not, can always move out to the scene classes
 	public function handleTouchInput(touch:Touch):Void
-	{		
+	{	
+		//if (touch.pressed)
+			//HXP.log("touch pressed: " + touch.id);
+			
+		//HXP.log("this.x, this.y, touch.x, touch.y: " + this.x + ", " + this.y + " " + touch.x + ", " + touch.y); // this.y is wrong
+			
+		//if (this.collidePoint(this.x, this.y, touch.x, touch.y))
+			//HXP.log("collided with touch entity: " + touch.id);
+	
 		if (touch.pressed && this.collidePoint(this.x, this.y, touch.x, touch.y)) {
 			
 			// associate the sprite to the touch, emulating swallow touch
-			HXP.log(touch.id);
-			touchID = touch.id;
-			
-			this.x = touch.x;
-			this.y = touch.y;
-			return;
+			//HXP.log(touch.id); // not working anymore?
+			touchID = touch.id; // todo: compare to HaxePunk's touch manager for touches
 		}
 		
 		if (touch.id != touchID)

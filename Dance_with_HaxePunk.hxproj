@@ -17,7 +17,7 @@
   <classpaths>
     <class path="src" />
     <class path="C:\Program Files (x86)\Motion-Twin\haxe\lib/nme/3,5,5/" />
-    <class path="C:\Program Files (x86)\Motion-Twin\haxe\lib/HaxePunk/2,2,0/" />
+    <class path="..\..\..\Haxe\Libraries\HaxePunk\com" />
     <class path="bin/flash/haxe" />
   </classpaths>
   <!-- Build options -->
@@ -31,7 +31,6 @@
   <!-- haxelib libraries -->
   <haxelib>
     <library name="nme" />
-    <library name="HaxePunk" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
