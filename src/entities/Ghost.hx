@@ -23,9 +23,9 @@ class Ghost extends Entity
 	private var currentFrameTotal:Int;
 	public var currentFrameHitPercent:Float;
 	private var image:Image;
-	private var trail:Trail;
+	private var path:Path;
 
-	public function new(record:Array<MovementData>, playing:Bool = true) 
+	public function new(record:Array<MovementData>, playing:Bool = true, showPath:Bool = true) 
 	{
 		super();
 		image = new Image(Global.GRAPHIC_WHITE_PIXEL);
@@ -50,16 +50,16 @@ class Ghost extends Entity
 		this.y = record[recordIterator].y;
 		recordIterator++;
 		
-		trail = new Trail(1000000, true); // todo: optimize: save sprite as bitmap and draw to screen
+		path = new Path(); // todo: optimize: save sprite as bitmap and draw to screen
 		for (i in 0...record.length) {
-			trail.points.push(new Point(record[i].x, record[i].y));
+			path.points.push(new Point(record[i].x, record[i].y));
 		}
-		HXP.scene.add(trail); // called when added to scene, should override added?
+		HXP.scene.add(path); // called when added to scene, should override added?
 	}
 	
 	override public function removed():Void 
 	{
-		HXP.scene.remove(trail);
+		HXP.scene.remove(path);
 		super.removed();
 	}
 	
