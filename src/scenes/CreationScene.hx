@@ -104,6 +104,7 @@ class CreationScene extends Scene
 			// pass the records of all touch entities into the next state
 			//var records:Array<Array<MovementData>> = new Array<Array<MovementData>>();
 			for (i in 0...touchEntities.length) {
+				//records.push(cast(touchEntities[i], TouchEntity).record);
 				Global.horse.records.push(cast(touchEntities[i], TouchEntity).record);
 			}
 			
@@ -119,6 +120,20 @@ class CreationScene extends Scene
 		}
 		
 	}
+	
+	// returns a new copy of records 
+	//public function copyRecords(recordsToCopy:Array<Array<MovementData>>):Array<Array<MovementData>>
+	//{
+		//var recordsCopy:Array<Array<MovementData>> = new Array<Array<MovementData>>();
+		//recordsCopy = recordsToCopy.copy;
+		//
+		//for (i in 0...records.length)  {
+			//recordsCopy[i] = records[i].copy();
+			//for (j in 0...recordsCopy[i].length) {
+				//recordsCopy[i][j] = records[i].push(records[i][j].copy);
+			//}
+		//}
+	//}
 	
 	override public function render():Dynamic 
 	{

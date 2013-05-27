@@ -11,7 +11,7 @@ import nme.geom.Point;
  * ...
  * @author Rahil Patel
  */
-class TouchEntity extends Entity // could not use Touch because it's taken
+class TouchEntity extends Entity
 {
 	private var trail:Trail;
 	private var touchID:Int;

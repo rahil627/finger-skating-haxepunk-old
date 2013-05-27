@@ -46,6 +46,7 @@ class Path extends Entity
 		super.update();
 		
 		// redraw when points are modified
+		// todo: probably does not modify when a point is replaced
 		if (points.length != lastPointsLength)
 			draw();
 	}
