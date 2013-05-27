@@ -6,6 +6,7 @@ import com.haxepunk.graphics.Text;
 import com.haxepunk.HXP;
 import com.haxepunk.Scene;
 import com.haxepunk.utils.Input;
+import com.haxepunk.utils.Touch;
 import entities.Ghost;
 import entities.TouchEntity;
 
@@ -116,8 +117,7 @@ class ImitationScene extends Scene
 			// a certain threshold is needed to earn a point at the end of the turn
 			var successful:Bool = currentFrameHitPercentTotal > winThreshold;
 			
-			if (successful)
-				Global.bottomPlayerScore += 1;
+			Global.horse.successful = true;
 			
 			// indicate win or lose
 			var successfulText = new Text(successful ? "SUCCESS" : "FAIL");
@@ -161,14 +161,14 @@ class ImitationScene extends Scene
 		
 		
 		case ImitationSubState.end:
-		
 		// go to creation state on touch (or mouse click for debugging)
-		//if (FlxG.touchManager.touches.length > 0 || FlxG.mouse.justReleased()) {
-			//FlxG.switchState(new CreationState());
-		//}
+		
+		// check input
+		if (Input.multiTouchSupported)
+			Input.touchPoints(handleTouchInput);
 		
 		if (Input.mouseReleased)
-			HXP.scene = new CreationScene();
+			endScene();
 		
 		default: // todo: not needed? Check HaXe syntax web page
 			trace("switch fail");
@@ -184,6 +184,16 @@ class ImitationScene extends Scene
 				this.add(new Ghost(records[i], true, false));
 			}
 		}
+	}
+	
+	private function handleTouchInput(touch:Touch):Void {
+		if (touch.pressed)
+			endScene();
+	}
+	
+	private function endScene():Void {
+		Global.horse.complete = true;
+		HXP.scene = Global.horse;
 	}
 	
 }

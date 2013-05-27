@@ -1,6 +1,5 @@
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
-import scenes.CreationScene;
 import scenes.Horse;
  
 class Main extends Engine {

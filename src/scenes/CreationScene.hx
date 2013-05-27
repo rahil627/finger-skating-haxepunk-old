@@ -70,6 +70,7 @@ class CreationScene extends Scene
 		switch (subScene) 
 		{
 			case CreationSubScene.begin:
+			// todo: does Haxe have regions?
 			// when the player moves an entity out of the starting area, the creation state begins
 			for (i in 0...touchEntities.length) {
 				if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
@@ -106,8 +107,10 @@ class CreationScene extends Scene
 				records.push(cast(touchEntities[i], TouchEntity).record);
 			}
 			
-			HXP.scene = new ImitationScene(records, recordingTime);
-			
+			Global.horse.records = records;
+			Global.horse.recordingTime = recordingTime;
+			Global.horse.complete = true;
+			HXP.scene = Global.horse;
 			
 			default: // todo: not needed?
 				trace("switch fail");
