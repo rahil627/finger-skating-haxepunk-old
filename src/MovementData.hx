@@ -18,4 +18,9 @@ class MovementData // could use struct, but in Haxe C++ they are slower than cla
 		this.time = time; // todo: currently unused
 		this.frame = frame;
 	}
+	
+	public function copy():MovementData
+	{
+		return new MovementData(x, y, time, frame);
+	}
 }

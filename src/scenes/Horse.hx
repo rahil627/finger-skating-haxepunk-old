@@ -9,6 +9,7 @@ enum Turn {
 }
 
 enum HorseState {
+	start;
 	creation;
 	imitation;
 	recreation;
@@ -39,7 +40,9 @@ class Horse extends Scene
 		successful = false;
 		bottomPlayerPoints = 0;
 		topPlayerPoints = 0;
-		
+		records = new Array<Array<MovementData>>();
+		state = HorseState.start;
+
 		//Global.game = this;
 		Global.horse = this;
 	}
@@ -47,9 +50,6 @@ class Horse extends Scene
 	override public function begin():Dynamic 
 	{
 		super.begin();
-		turn = Turn.bottomPlayer;
-		state = HorseState.creation;
-		HXP.scene = new CreationScene();
 	}
 	
 	override public function update():Dynamic 
@@ -65,6 +65,11 @@ class Horse extends Scene
 		
 		switch (state) 
 		{
+			case HorseState.start:
+				turn = Turn.bottomPlayer;
+				state = HorseState.creation;
+				HXP.scene = new CreationScene();
+				
 			case HorseState.creation:
 				if (complete) {
 					state = HorseState.imitation;
@@ -82,6 +87,7 @@ class Horse extends Scene
 					changeTurns();
 					state = HorseState.creation;
 					resetVars();
+					records = new Array<Array<MovementData>>();
 					HXP.scene = new CreationScene();
 				}
 				else {
@@ -105,8 +111,9 @@ class Horse extends Scene
 					checkIfGameIsOver();
 				}
 				
-				resetVars();
 				state = HorseState.creation;
+				resetVars();
+				records = new Array<Array<MovementData>>();
 				HXP.scene = new CreationScene();
 					
 			//default: // todo: learn Haxe enums

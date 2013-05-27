@@ -196,4 +196,19 @@ class ImitationScene extends Scene
 		HXP.scene = Global.horse;
 	}
 	
+	// returns a new copy of records 
+	//public function copyRecords(recordsToCopy:Array<Array<MovementData>>):Array<Array<MovementData>>
+	//{
+		//var recordsCopy:Array<Array<MovementData>> = new Array<Array<MovementData>>();
+		//recordsCopy = recordsToCopy.copy;
+		//
+		//for (i in 0...records.length)  {
+			//recordsCopy[i] = records[i].copy();
+			//for (j in 0...recordsCopy[i].length) {
+				//recordsCopy[i][j] = records[i].push(records[i][j].copy);
+			//}
+		//}
+	//}
+	
+	
 }
