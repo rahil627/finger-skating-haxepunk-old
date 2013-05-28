@@ -82,18 +82,22 @@ class CreationScene extends Scene
 			else
 				handleMouseInputForBeginSubScene();
 				
-			// todo: does Haxe have regions?
 			// when the player moves an entity out of the starting area, the creation state begins
+			var playerMovedTouchEntityOut:Bool = false;
 			for (i in 0...touchEntities.length) {
 				if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
-					// begin create state
-					this.remove(bottomArea);
-					for (j in 0...touchEntities.length) {
-						(cast(touchEntities[j], TouchEntity)).recording = true;
-					}
-					state = CreationState.create;
+					playerMovedTouchEntityOut = true;
 					break;
 				}
+			}
+			
+			if (playerMovedTouchEntityOut) {
+				// begin create state
+				this.remove(bottomArea);
+				for (j in 0...touchEntities.length) {
+					(cast(touchEntities[j], TouchEntity)).recording = true;
+				}
+				state = CreationState.create;
 			}
 			//} endregion
 			
@@ -113,10 +117,9 @@ class CreationScene extends Scene
 				
 			recordingTime += HXP.elapsed;
 			//} endregion
-			
 				
 			case CreationState.end:
-			//{ region create
+			//{ region end
 			// pass the records of all touch entities into the next state
 			//var records:Array<Array<MovementData>> = new Array<Array<MovementData>>();
 			for (i in 0...touchEntities.length) {

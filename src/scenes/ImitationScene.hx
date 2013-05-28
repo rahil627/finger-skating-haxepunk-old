@@ -83,7 +83,7 @@ class ImitationScene extends Scene
 			touchEntities.push(touchEntity);
 		}
 		
-		// show percentage at the bottom
+		// add percentage at the bottom
 		percentageText = new Text("000%"); // set the width of the text
 		percentageText.text = "0%";
 		percentageText.scale = 5;
@@ -102,35 +102,40 @@ class ImitationScene extends Scene
 		case ImitationState.observe: 
 		//{ region observe state
 		//start once the player moves a touch sprite out of starting area
+		var playerMovedTouchEntityOut:Bool = false;
 		for (i in 0...touchEntities.length) {
 			if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
-				// begin imitate state
-				this.remove(bottomArea); // todo: extra: fade out
-				
-				for (j in 0...ghosts.length) {
-					(cast(ghosts[j], Ghost)).playing = true;
-				}
-				
-				// todo: how to quickly clear an array?
-				// could clear backwards
-				// does setting to null work?
-				for (i in 0...observeStateGhosts.length) {
-					this.remove(observeStateGhosts[i]);
-				}
-				observeStateGhosts = null;
-				
-				// add ghosts a little ahead of the main ghost
-				var ghost:Ghost; // todo: create a public var?
-				for (i in 0...records.length) 
-				{
-					ghost = new Ghost(records[i], true, false); // todo: create a starting position a little ahead in time
-					this.add(ghost);
-					imitateStateAheadGhosts.push(ghost);
-				}
-				
-				state = ImitationState.imitate;
+				playerMovedTouchEntityOut = true;
 				break;
 			}
+		}
+		
+		if (playerMovedTouchEntityOut) {
+			// begin imitate state
+			this.remove(bottomArea); // todo: extra: fade out
+			
+			for (j in 0...ghosts.length) {
+				(cast(ghosts[j], Ghost)).playing = true;
+			}
+			
+			// todo: how to quickly clear an array?
+			// could clear backwards
+			// does setting to null work?
+			for (i in 0...observeStateGhosts.length) {
+				this.remove(observeStateGhosts[i]);
+			}
+			observeStateGhosts = null;
+			
+			// add ghosts a little ahead of the main ghost
+			var ghost:Ghost; // todo: create a public var?
+			for (i in 0...records.length) 
+			{
+				ghost = new Ghost(records[i], true, false); // todo: create a starting position a little ahead in time
+				this.add(ghost);
+				imitateStateAheadGhosts.push(ghost);
+			}
+			
+			state = ImitationState.imitate;
 		}
 		
 		// play the recording indefinitely
