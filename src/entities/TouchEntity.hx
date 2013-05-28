@@ -23,7 +23,7 @@ class TouchEntity extends Entity
 	public function new(x:Float = 0, y:Float = 0) 
 	{
 		var image:Image = new Image(Global.GRAPHIC_WHITE_PIXEL);
-		image.scale = 50;
+		image.scale = 25;
 		image.originX += .5;
 		image.originY += .5;
 		//image.centerOrigin(); // todo: HaxePunk bug: should use scaledwidth and scaledheight

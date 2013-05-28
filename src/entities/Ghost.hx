@@ -26,17 +26,17 @@ class Ghost extends Entity
 	private var path:Path;
 	private var showPath:Bool;
 
-	public function new(record:Array<MovementData>, playing:Bool = true, showPath:Bool = true) 
+	public function new(record:Array<MovementData>, playing:Bool = true, showPath:Bool = true, startingTime:Int) 
 	{
 		super();
 		image = new Image(Global.GRAPHIC_WHITE_PIXEL);
-		image.scale = 25;
+		image.scale = 50;
 		image.originX += .5;
 		image.originY += .5;
 		//image.centerOrigin();
 		image.color = 0xFFFFFF;
 		this.graphic = image;
-		this.setHitbox(25, 25);
+		this.setHitbox(50, 50);
 		this.centerOrigin();
 		
 		this.record = record;
