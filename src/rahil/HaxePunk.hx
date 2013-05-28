@@ -38,7 +38,7 @@ class HaxePunk
 		return null;
 	}
 	
-	public static function createCircleOutline(radius:Int, thickness:Int, color:Int = 0xFFFFFF):Image
+	public static function createCircleOutline(radius:Int, thickness:Int, color:Int = 0xFFFFFF, drawDebugOutline = false):Image
 	{
 		if (HXP.renderMode.has(RenderMode.BUFFER) && radius > 0) // todo: should try / catch
 		{
@@ -51,10 +51,12 @@ class HaxePunk
 			data.draw(HXP.sprite);
 			
 			// draw debug rectangle
-			//HXP.sprite.graphics.clear();
-			//HXP.sprite.graphics.lineStyle(1, 0xFF0000, 1);
-			//HXP.sprite.graphics.drawRect(0, 0, radius * 2 + thickness * 2, radius * 2 + thickness * 2);
-			//data.draw(HXP.sprite);
+			if (drawDebugOutline) {
+				HXP.sprite.graphics.clear();
+				HXP.sprite.graphics.lineStyle(1, 0xFF0000, 1);
+				HXP.sprite.graphics.drawRect(0, 0, radius * 2 + thickness * 2, radius * 2 + thickness * 2);
+				data.draw(HXP.sprite);
+			}
 			
 			var image:Image = new Image(data);
 			return image;
