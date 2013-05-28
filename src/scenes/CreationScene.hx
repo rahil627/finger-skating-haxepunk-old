@@ -9,7 +9,7 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Touch;
 import entities.TouchEntity;
 
-enum CreationSubScene {
+enum CreationState {
 	begin;
 	create;
 	end;
@@ -24,13 +24,13 @@ class CreationScene extends Scene
 	private var bottomArea:Entity;
 	private var touchEntities:Array<TouchEntity>;
 	private var debugText:Text;
-	private var subScene:CreationSubScene;
+	private var state:CreationState;
 	private var recordingTime:Float;
 
 	public function new() 
 	{
 		super();
-		subScene = CreationSubScene.begin;
+		state = CreationState.begin;
 		recordingTime = 0;
 	}
 	
@@ -71,9 +71,9 @@ class CreationScene extends Scene
 		// update entities
 		super.update();
 		
-		switch (subScene) 
+		switch (state) 
 		{
-			case CreationSubScene.begin:
+			case CreationState.begin:
 			// check input
 			if (Input.multiTouchSupported)
 				Input.touchPoints(handleTouchInputForBeginSubScene);
@@ -88,13 +88,13 @@ class CreationScene extends Scene
 					for (j in 0...touchEntities.length) {
 						(cast(touchEntities[j], TouchEntity)).recording = true;
 					}
-					subScene = CreationSubScene.create;
+					state = CreationState.create;
 					break;
 				}
 			}
 			
 			
-			case CreationSubScene.create:
+			case CreationState.create:
 			// when the player moves all of the entities back to the starting area, the creation state ends
 			var numberOfTouchSpritesInBottomArea:Int = 0;
 			
@@ -105,12 +105,12 @@ class CreationScene extends Scene
 			}
 			
 			if (numberOfTouchSpritesInBottomArea == touchEntities.length)
-				subScene = CreationSubScene.end;
+				state = CreationState.end;
 				
 			recordingTime += HXP.elapsed;
 			
 				
-			case CreationSubScene.end:
+			case CreationState.end:
 			// pass the records of all touch entities into the next state
 			//var records:Array<Array<MovementData>> = new Array<Array<MovementData>>();
 			for (i in 0...touchEntities.length) {

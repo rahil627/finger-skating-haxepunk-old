@@ -10,7 +10,7 @@ import com.haxepunk.utils.Touch;
 import entities.Ghost;
 import entities.TouchEntity;
 
-enum ImitationSubState {
+enum ImitationState {
 	begin;
 	imitate;
 	end;
@@ -27,7 +27,7 @@ class ImitationScene extends Scene
 	private var GhostRespawnTimer:Float;
 	private var ghosts:Array<Ghost>;
 	private var touchEntities:Array<TouchEntity>;
-	private var imitationSubState:ImitationSubState;
+	private var state:ImitationState;
 	private var bottomArea:Entity;
 	private var percentage:Entity;
 	private var percentageText:Text;
@@ -42,7 +42,7 @@ class ImitationScene extends Scene
 		this.recordingTime = recordingTime;
 		
 		GhostRespawnTimer = 11;
-		imitationSubState = ImitationSubState.begin;
+		state = ImitationState.begin;
 		imitationTimer = 0;
 		currentFrameHitPercentTotal = 1;
 		winThreshold = .90;
@@ -91,9 +91,9 @@ class ImitationScene extends Scene
 	{
 		super.update();
 		
-		switch (imitationSubState) 
+		switch (state) 
 		{
-		case ImitationSubState.begin: 
+		case ImitationState.begin: 
 		//start once the player moves a touch sprite out of starting area
 		for (i in 0...touchEntities.length) {
 			if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
@@ -101,18 +101,18 @@ class ImitationScene extends Scene
 				for (j in 0...ghosts.length) {
 					(cast(ghosts[j], Ghost)).playing = true;
 				}
-				imitationSubState = ImitationSubState.imitate;
+				state = ImitationState.imitate;
 				break;
 			}
 		}
 		
-		case ImitationSubState.imitate:
+		case ImitationState.imitate:
 			
 		// if time is up, go to end state
 		imitationTimer += HXP.elapsed;
 		
 		if (imitationTimer >= recordingTime) {
-			imitationSubState = ImitationSubState.end;
+			state = ImitationState.end;
 			
 			// a certain threshold is needed to earn a point at the end of the turn
 			var successful:Bool = currentFrameHitPercentTotal > winThreshold;
@@ -160,7 +160,7 @@ class ImitationScene extends Scene
 		}
 		
 		
-		case ImitationSubState.end:
+		case ImitationState.end:
 		// go to creation state on touch (or mouse click for debugging)
 		
 		// check input
