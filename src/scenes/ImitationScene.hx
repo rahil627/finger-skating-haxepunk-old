@@ -57,8 +57,9 @@ class ImitationScene extends Scene
 		// add starting / ending area
 		this.add(bottomArea = new Entity(0, HXP.screen.height - HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
 		
-		// init observation ghosts array
+		// init ghost arrays
 		observeStateGhosts = new Array<Ghost>();
+		imitateStateAheadGhosts = new Array<Ghost>();
 		
 		// add the main ghosts that will be tested against for points
 		ghosts = new Array<Ghost>();
