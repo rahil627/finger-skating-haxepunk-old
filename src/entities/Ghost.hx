@@ -3,7 +3,9 @@ package entities;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.HXP;
+import com.haxepunk.masks.Circle;
 import nme.geom.Point;
+import rahil.HaxePunk;
 
 /**
  * GhostSprite moves according to the record it's given
@@ -26,18 +28,19 @@ class Ghost extends Entity
 	private var path:Path;
 	private var showPath:Bool;
 
-	public function new(record:Array<MovementData>, playing:Bool = true, showPath:Bool = true, startingTime:Int) 
+	public function new(record:Array<MovementData>, playing:Bool = true, showPath:Bool = true, startingTime:Int = 0) 
 	{
 		super();
-		image = new Image(Global.GRAPHIC_WHITE_PIXEL);
-		image.scale = 50;
-		image.originX += .5;
-		image.originY += .5;
+		var radius:Int = 24;
+		image = HaxePunk.createCircleImage(radius, 0xFFFFFF);
 		//image.centerOrigin();
-		image.color = 0xFFFFFF;
+		image.originX += radius;
+		image.originY += radius;
+		//image.color = 0xFFFFFF;
 		this.graphic = image;
-		this.setHitbox(50, 50);
-		this.centerOrigin();
+		var mask:Circle = new Circle(radius, -radius, -radius);
+		this.mask = mask;
+		//this.centerOrigin();
 		
 		this.record = record;
 		this.playing = playing;
@@ -108,5 +111,4 @@ class Ghost extends Entity
 		
 		return _touching = value;
 	}
-	
 }

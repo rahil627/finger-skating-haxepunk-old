@@ -49,6 +49,7 @@ class CreationScene extends Scene
 		
 		// add starting / ending area
 		this.add(bottomArea = new Entity(0, HXP.height - HXP.height / 10, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
+		bottomArea.setHitbox(HXP.width, Math.round(HXP.height / 10));
 		
 		// add a bunch of touch entities for testing purposes
 		// in release, they are added dynamically
@@ -84,6 +85,7 @@ class CreationScene extends Scene
 			// when the player moves an entity out of the starting area, the creation state begins
 			for (i in 0...touchEntities.length) {
 				if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
+					// begin create state
 					this.remove(bottomArea);
 					for (j in 0...touchEntities.length) {
 						(cast(touchEntities[j], TouchEntity)).recording = true;

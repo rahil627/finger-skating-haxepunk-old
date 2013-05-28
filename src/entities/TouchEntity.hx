@@ -3,9 +3,11 @@ package entities;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.HXP;
+import com.haxepunk.masks.Circle;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Touch;
 import nme.geom.Point;
+import rahil.HaxePunk;
 
 /**
  * ...
@@ -22,15 +24,25 @@ class TouchEntity extends Entity
 
 	public function new(x:Float = 0, y:Float = 0) 
 	{
-		var image:Image = new Image(Global.GRAPHIC_WHITE_PIXEL);
-		image.scale = 25;
-		image.originX += .5;
-		image.originY += .5;
+		//var image:Image = new Image(Global.GRAPHIC_WHITE_PIXEL);
+		//image.scale = 25;
+		//image.originX += .5;
+		//image.originY += .5;
 		//image.centerOrigin(); // todo: HaxePunk bug: should use scaledwidth and scaledheight
-		image.color = 0x0000FF;
-		super(x + image.width / 2, y + image.height / 2, image);
-		this.setHitbox(50, 50);
-		this.centerOrigin();
+		//image.color = 0x0000FF;
+		//super(x + image.width / 2, y + image.height / 2, image);
+		//this.setHitbox(50, 50);
+		//this.centerOrigin();
+		
+		var radius:Int = 12;
+		var image = HaxePunk.createCircleImage(radius, 0x0000FF);
+		//image.centerOrigin();
+		image.originX += radius;
+		image.originY += radius;
+		//image.color = 0xFFFFFF;
+		var mask:Circle = new Circle(radius, -radius, -radius);
+		//this.centerOrigin();
+		super(x, y, image, mask);
 		
 		trail = new Trail();
 		
