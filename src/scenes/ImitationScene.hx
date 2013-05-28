@@ -35,6 +35,7 @@ class ImitationScene extends Scene
 	private var winThreshold:Float;
 	private var currentFrameHitPercentTotal:Float;
 	private var observeStateGhosts:Array<Ghost>;
+	private var imitateStateAheadGhosts:Array<Ghost>;
 
 	public function new(records, recordingTime) 
 	{
@@ -98,10 +99,13 @@ class ImitationScene extends Scene
 		switch (state) 
 		{
 		case ImitationState.observe: 
+		//{ region observe state
 		//start once the player moves a touch sprite out of starting area
 		for (i in 0...touchEntities.length) {
 			if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
+				// begin imitate state
 				this.remove(bottomArea); // todo: extra: fade out
+				
 				for (j in 0...ghosts.length) {
 					(cast(ghosts[j], Ghost)).playing = true;
 				}
@@ -113,6 +117,15 @@ class ImitationScene extends Scene
 					this.remove(observeStateGhosts[i]);
 				}
 				observeStateGhosts = null;
+				
+				// add ghosts a little ahead of the main ghost
+				var ghost:Ghost; // todo: create a public var?
+				for (i in 0...records.length) 
+				{
+					ghost = new Ghost(records[i], true, false); // todo: create a starting position a little ahead in time
+					this.add(ghost);
+					imitateStateAheadGhosts.push(ghost);
+				}
 				
 				state = ImitationState.imitate;
 				break;
@@ -131,10 +144,11 @@ class ImitationScene extends Scene
 				observeStateGhosts.push(ghost);
 			}
 		}
+		//} endregion
 		
 		
 		case ImitationState.imitate:
-			
+		//{ region imitate state
 		// if time is up, go to end state
 		imitationTimer += HXP.elapsed;
 		
@@ -185,9 +199,10 @@ class ImitationScene extends Scene
 		else {
 			percentageText.color = 0xFFFF0000;
 		}
-		
+		//} endregion
 		
 		case ImitationState.end:
+		//{ regiong end state
 		// go to creation state on touch (or mouse click for debugging)
 		
 		// check input
@@ -196,6 +211,8 @@ class ImitationScene extends Scene
 		
 		if (Input.mouseReleased)
 			endScene();
+		//} endregion
+			
 		
 		default: // todo: not needed? Check HaXe syntax web page
 			trace("switch fail");

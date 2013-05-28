@@ -75,6 +75,7 @@ class CreationScene extends Scene
 		switch (state) 
 		{
 			case CreationState.begin:
+			//{ region begin
 			// check input
 			if (Input.multiTouchSupported)
 				Input.touchPoints(handleTouchInputForBeginSubScene);
@@ -94,9 +95,10 @@ class CreationScene extends Scene
 					break;
 				}
 			}
-			
+			//} endregion
 			
 			case CreationState.create:
+			//{ region create
 			// when the player moves all of the entities back to the starting area, the creation state ends
 			var numberOfTouchSpritesInBottomArea:Int = 0;
 			
@@ -110,9 +112,11 @@ class CreationScene extends Scene
 				state = CreationState.end;
 				
 			recordingTime += HXP.elapsed;
+			//} endregion
 			
 				
 			case CreationState.end:
+			//{ region create
 			// pass the records of all touch entities into the next state
 			//var records:Array<Array<MovementData>> = new Array<Array<MovementData>>();
 			for (i in 0...touchEntities.length) {
@@ -125,6 +129,7 @@ class CreationScene extends Scene
 			Global.horse.recordingTime = recordingTime;
 			Global.horse.complete = true;
 			HXP.scene = Global.horse;
+			//} endregion
 			
 			default: // todo: not needed?
 				trace("switch fail");
