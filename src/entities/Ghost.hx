@@ -31,7 +31,7 @@ class Ghost extends Entity
 	public function new(record:Array<MovementData>, playing:Bool = true, showPath:Bool = true, startingTime:Int = 0) 
 	{
 		super();
-		var radius:Int = 24;
+		var radius:Int = 12;
 		image = HaxePunk.createCircleImage(radius, 0xFFFFFF);
 		//image.centerOrigin();
 		image.originX += radius;
