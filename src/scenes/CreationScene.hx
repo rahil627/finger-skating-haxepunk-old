@@ -6,6 +6,7 @@ import com.haxepunk.graphics.Text;
 import com.haxepunk.HXP;
 import com.haxepunk.Scene;
 import com.haxepunk.utils.Input;
+import com.haxepunk.utils.Touch;
 import entities.TouchEntity;
 
 enum CreationSubScene {
@@ -49,13 +50,16 @@ class CreationScene extends Scene
 		// add starting / ending area
 		this.add(bottomArea = new Entity(0, HXP.height - HXP.height / 10, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
 		
-		// add a bunch of touch entities
+		// add a bunch of touch entities for testing purposes
+		// in release, they are added dynamically
 		touchEntities = new Array<TouchEntity>();
-		var touchEntity:TouchEntity;
-		for (i in 0...5)  {
-			touchEntity = new TouchEntity((i + 1) * HXP.width / 6, bottomArea.y + bottomArea.height / 2);
-			touchEntities.push(touchEntity);
-			this.add(touchEntity);
+		if (!Input.multiTouchSupported) { // todo: if flash, check how to do compiler conditionals for NME
+			var touchEntity:TouchEntity;
+			for (i in 0...5)  {
+				touchEntity = new TouchEntity((i + 1) * HXP.width / 6, bottomArea.y + bottomArea.height / 2);
+				touchEntities.push(touchEntity);
+				this.add(touchEntity);
+			}
 		}
 		
 		//this.getClass(TouchEntity, touchEntities); // probably does not work until the next frame
@@ -70,6 +74,12 @@ class CreationScene extends Scene
 		switch (subScene) 
 		{
 			case CreationSubScene.begin:
+			// check input
+			if (Input.multiTouchSupported)
+				Input.touchPoints(handleTouchInputForBeginSubScene);
+			else
+				handleMouseInputForBeginSubScene();
+				
 			// todo: does Haxe have regions?
 			// when the player moves an entity out of the starting area, the creation state begins
 			for (i in 0...touchEntities.length) {
@@ -134,6 +144,26 @@ class CreationScene extends Scene
 			//}
 		//}
 	//}
+	
+	private function handleTouchInputForBeginSubScene(touch:Touch):Void
+	{
+		if (touch.pressed) {
+			if (touch.y < bottomArea.y) {
+				var touchEntity:TouchEntity;
+				touchEntity = new TouchEntity(touch.x, touch.y);
+				touchEntities.push(touchEntity);
+				this.add(touchEntity);
+			}
+		}
+		
+		// todo: on release, remove
+	}
+	
+	
+	private function handleMouseInputForBeginSubScene():Void
+	{
+		
+	}
 	
 	override public function render():Dynamic 
 	{
