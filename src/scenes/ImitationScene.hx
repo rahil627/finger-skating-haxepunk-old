@@ -11,7 +11,7 @@ import entities.Ghost;
 import entities.TouchEntity;
 
 enum ImitationState {
-	begin;
+	observe;
 	imitate;
 	end;
 }
@@ -24,8 +24,8 @@ class ImitationScene extends Scene
 {
 	private var records:Array<Array<MovementData>>;
 	private var recordingTime:Float;
-	private var GhostRespawnTimer:Float;
-	private var ghosts:Array<Ghost>;
+	private var ghostRespawnTimer:Float;
+	private var ghosts:Array<Ghost>; // todo: rename this to mainGhosts
 	private var touchEntities:Array<TouchEntity>;
 	private var state:ImitationState;
 	private var bottomArea:Entity;
@@ -34,6 +34,7 @@ class ImitationScene extends Scene
 	private var imitationTimer:Float;
 	private var winThreshold:Float;
 	private var currentFrameHitPercentTotal:Float;
+	private var observeStateGhosts:Array<Ghost>;
 
 	public function new(records, recordingTime) 
 	{
@@ -41,8 +42,8 @@ class ImitationScene extends Scene
 		this.records = records;
 		this.recordingTime = recordingTime;
 		
-		GhostRespawnTimer = 11;
-		state = ImitationState.begin;
+		ghostRespawnTimer = 11;
+		state = ImitationState.observe;
 		imitationTimer = 0;
 		currentFrameHitPercentTotal = 1;
 		winThreshold = .90;
@@ -55,7 +56,10 @@ class ImitationScene extends Scene
 		// add starting / ending area
 		this.add(bottomArea = new Entity(0, HXP.screen.height - HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
 		
-		// add ghosts that wait until the player touches it		
+		// init observation ghosts array
+		observeStateGhosts = new Array<Ghost>();
+		
+		// add the main ghosts that will be tested against for points
 		ghosts = new Array<Ghost>();
 		var ghost:Ghost;
 		for (i in 0...records.length) 
@@ -93,7 +97,7 @@ class ImitationScene extends Scene
 		
 		switch (state) 
 		{
-		case ImitationState.begin: 
+		case ImitationState.observe: 
 		//start once the player moves a touch sprite out of starting area
 		for (i in 0...touchEntities.length) {
 			if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
@@ -101,10 +105,33 @@ class ImitationScene extends Scene
 				for (j in 0...ghosts.length) {
 					(cast(ghosts[j], Ghost)).playing = true;
 				}
+				
+				// todo: how to quickly clear an array?
+				// could clear backwards
+				// does setting to null work?
+				for (i in 0...observeStateGhosts.length) {
+					this.remove(observeStateGhosts[i]);
+				}
+				observeStateGhosts = null;
+				
 				state = ImitationState.imitate;
 				break;
 			}
 		}
+		
+		// play the recording indefinitely
+		ghostRespawnTimer += HXP.elapsed;
+		var ghost:Ghost;
+		if (ghostRespawnTimer > recordingTime + 3) {
+			ghostRespawnTimer = 0;
+			for (i in 0...records.length) 
+			{
+				ghost = new Ghost(records[i], true, false);
+				this.add(ghost);
+				observeStateGhosts.push(ghost);
+			}
+		}
+		
 		
 		case ImitationState.imitate:
 			
@@ -174,16 +201,6 @@ class ImitationScene extends Scene
 			trace("switch fail");
 		}
 		
-		// play the recording every x seconds // todo: move this, to add some ghost sprites a little ahead of the main ones
-		GhostRespawnTimer += HXP.elapsed;
-		
-		if (GhostRespawnTimer > 5) {
-			GhostRespawnTimer = 0;
-			for (i in 0...records.length) 
-			{
-				this.add(new Ghost(records[i], true, false));
-			}
-		}
 	}
 	
 	private function handleTouchInput(touch:Touch):Void {
