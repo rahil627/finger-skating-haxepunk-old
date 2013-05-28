@@ -1,12 +1,16 @@
 package entities;
 
 import com.haxepunk.Entity;
+import com.haxepunk.Graphic;
+import com.haxepunk.graphics.Graphiclist;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.HXP;
 import com.haxepunk.masks.Circle;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Touch;
+import nme.display.BitmapData;
 import nme.geom.Point;
+import com.haxepunk.RenderMode;
 import rahil.HaxePunk;
 
 /**
@@ -35,14 +39,19 @@ class TouchEntity extends Entity
 		//this.centerOrigin();
 		
 		var radius:Int = 12;
-		var image = HaxePunk.createCircleImage(radius, 0x0000FF);
+		var ringRadius:Int = 24;
+		var thickness:Int = 10;
+		var circleImage = HaxePunk.createCircleImage(radius, 0x0000FF);
+		var ringImage = HaxePunk.createCircleOutline(ringRadius, thickness, 0x0000FF);
 		//image.centerOrigin();
-		image.originX += radius;
-		image.originY += radius;
-		//image.color = 0xFFFFFF;
-		var mask:Circle = new Circle(radius, -radius, -radius);
+		circleImage.originX += radius;
+		circleImage.originY += radius;
+		ringImage.originX += ringRadius + thickness / 2;
+		ringImage.originY += ringRadius + thickness / 2;
+		var graphicList:Graphiclist = new Graphiclist([circleImage, ringImage]);
 		//this.centerOrigin();
-		super(x, y, image, mask);
+		var mask = new Circle(ringRadius, -ringRadius, -ringRadius);
+		super(x, y, graphicList, mask);
 		
 		trail = new Trail();
 		
