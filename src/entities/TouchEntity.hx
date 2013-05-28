@@ -33,13 +33,18 @@ class TouchEntity extends Entity
 		this.centerOrigin();
 		
 		trail = new Trail();
-		HXP.scene.add(trail);
 		
 		touchID = 0;
 		recording = false;
 		record = new Array<MovementData>();
 		recordingTime = 0;
 		recordingFrame = 0;
+	}
+	
+	override public function added():Void 
+	{
+		super.added();
+		HXP.scene.add(trail);
 	}
 	
 	override public function removed():Void 

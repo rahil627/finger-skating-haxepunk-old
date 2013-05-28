@@ -29,7 +29,6 @@ class Trail extends Entity
 	{
 		super();
 		sprite = new Sprite();
-		HXP.stage.addChild(sprite);
 		points = new List<Point>();
 		this.maxPointsLength = maxPointsLength;
 	}
@@ -37,10 +36,12 @@ class Trail extends Entity
 	override public function added():Void 
 	{
 		super.added();
+		HXP.stage.addChild(sprite);
 	}
 	
 	override public function removed():Void 
 	{
+		//sprite.graphics.clear(); // todo: trying to fix trail bit left behind
 		HXP.stage.removeChild(sprite);
 		super.removed();
 	}

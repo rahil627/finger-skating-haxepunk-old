@@ -56,11 +56,14 @@ class Ghost extends Entity
 		for (i in 0...record.length) {
 			path.points.push(new Point(record[i].x, record[i].y));
 		}
-		
-		if (showPath)
-			HXP.scene.add(path); // called when added to scene, should override added?
 	}
 	
+	override public function added():Void 
+	{
+		super.added();
+		if (showPath)
+			HXP.scene.add(path);
+	}
 	override public function removed():Void 
 	{
 		if (showPath)
