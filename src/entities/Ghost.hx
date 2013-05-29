@@ -27,6 +27,7 @@ class Ghost extends Entity
 	private var image:Image;
 	private var path:Path;
 	private var showPath:Bool;
+	private var currentTime:Float;
 
 	public function new(record:Array<MovementData>, playing:Bool = true, showPath:Bool = true, startingTime:Int = 0) 
 	{
@@ -50,6 +51,7 @@ class Ghost extends Entity
 		currentFrameTotal = 0;
 		currentFrameHitPercent = 1;
 		recordIterator = 0;
+		currentTime = 0;
 		
 		this.x = record[recordIterator].x;
 		this.y = record[recordIterator].y;
@@ -78,17 +80,50 @@ class Ghost extends Entity
 	{
 		super.update();
 		
-		// remove self when done
-		if (recordIterator == Std.int(record.length)) {
-			this.scene.remove(this);
-			return;
-		}
-		
 		if (playing) {
+			currentTime += HXP.elapsed;
+			
+			// old frame code
+			// remove self when done
+			//if (recordIterator == Std.int(record.length)) {
+				//this.scene.remove(this);
+				//return;
+			//}
+			
+			//this.x = record[recordIterator].x;
+			//this.y = record[recordIterator].y;
+			//recordIterator++;
+			//currentFrameTotal++;
+			
+			// compare time with data
+			// todo: need to check against end of record, especially with score
+			iterateToNextMovementData();
+			
+			// remove self when done
+			if (recordIterator == Std.int(record.length)) {
+				this.scene.remove(this);
+				return;
+			}
+			
 			this.x = record[recordIterator].x;
 			this.y = record[recordIterator].y;
-			recordIterator++;
-			currentFrameTotal++;
+		}
+	}
+	
+	private function iterateToNextMovementData():Void {
+		// search array for the time nearest to current time
+		// maybe should use list
+		// maybe can use lambda function
+		for (i in 0...record.length - recordIterator) 
+		{
+			if (record[recordIterator].time <= currentTime) {
+				recordIterator++;
+			}
+			else {
+				// went too far! Go back oncee
+				recordIterator--;
+				break;
+			}
 		}
 	}
 	
