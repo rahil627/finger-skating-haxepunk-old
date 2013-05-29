@@ -20,6 +20,7 @@ enum LinearPathTweenState {
 class Ghost extends Entity
 {
 	private var record:Array<MovementData>;
+	private var recordingTime:Float;
 	public var playing:Bool;
 	private var recordIterator:Int;
 	private var _touching:Bool;
@@ -36,7 +37,7 @@ class Ghost extends Entity
 	private var linearPathTween:LinearPath;
 	private var linearPathTweenState:LinearPathTweenState;
 
-	public function new(record:Array<MovementData>, playing:Bool = true, showPath:Bool = true, startingTime:Int = 0) 
+	public function new(record:Array<MovementData>, recordingTime:Float, playing:Bool = true, showPath:Bool = true, startingTime:Int = 0) 
 	{
 		super();
 		var radius:Int = 12;
@@ -51,6 +52,7 @@ class Ghost extends Entity
 		//this.centerOrigin();
 		
 		this.record = record;
+		this.recordingTime = recordingTime; // todo: currently unused
 		this.playing = playing;
 		this.showPath = showPath;
 		
@@ -84,7 +86,7 @@ class Ghost extends Entity
 			HXP.scene.add(path);
 			
 		this.addTween(linearPathTween);
-		linearPathTween.setMotion(100); // todo: ease?, need recording time
+		linearPathTween.setMotion(HXP.frameRate * recordingTime); // todo: ease?
 	}
 	
 	override public function removed():Void 
@@ -101,26 +103,8 @@ class Ghost extends Entity
 		if (playing) {
 			currentPlayTime += HXP.elapsed;
 			
-			// old frame code
-			// remove self when done
-			//if (recordIterator == Std.int(record.length)) {
-				//this.scene.remove(this);
-				//return;
-			//}
-			
-			//this.x = record[recordIterator].x;
-			//this.y = record[recordIterator].y;
 			//recordIterator++;
 			//currentFrameTotal++;
-			
-			// compare time with data
-			// todo: need to check against end of record, especially with score
-			//iterateToNextMovementData();
-			
-			// calculate the point depending on time
-			//var nextPoint:Point = getNextPoint();
-			
-			// try linearPath tween
 			
 			if (linearPathTweenState == LinearPathTweenState.stop) { // todo: use enumEq?
 				linearPathTweenState = LinearPathTweenState.playing;
@@ -134,15 +118,6 @@ class Ghost extends Entity
 			// back and progresses allong the LinearPath.
 			this.x = linearPathTween.x;
 			this.y = linearPathTween.y;
-			
-			// remove self when done
-			//if (recordIterator == Std.int(record.length - 1)) {
-				//this.scene.remove(this);
-				//return;
-			//}
-			
-			//this.x = record[recordIterator].x;
-			//this.y = record[recordIterator].y;
 		}
 	}
 	
@@ -157,44 +132,6 @@ class Ghost extends Entity
 		// remove self when done
 		this.scene.remove(this);
 	}
-	
-	/*
-	private function iterateToNextMovementData():Void {
-		// search array for the time nearest to current time
-		// maybe should use list
-		// maybe can use lambda function
-		for (i in 0...record.length - recordIterator - 1) 
-		{
-			// should remove itself before this happens
-			if (recordIterator + 1 == record.length)
-				HXP.log("went past array length");
-				break;
-			
-			if (record[recordIterator].time <= currentPlayTime) {
-				recordIterator++;
-				break;
-			}
-			else {
-				// went too far! Go back oncee
-				recordIterator--;
-				break;
-			}
-		}
-	}
-	*/
-	
-	/*
-	// todo: optimize: pull out vars
-	private function getNextPoint():Point {
-		// calculate the next point by getting the vector between the current point and next point and factoring in time
-		var currentPoint:Point = new Point(record[recordIterator].x, record[recordIterator].y);
-		var nextPoint:Point = new Point(record[recordIterator + 1].x, record[recordIterator + 1].y) // may need to add y
-		var differenceVector:Point = new Point(currentPoint.subtract(nextPoint));
-		HXP.distance(
-		differenceVector.normalize()
-		
-	}
-	*/
 	
 	private function get_touching():Bool 
 	{

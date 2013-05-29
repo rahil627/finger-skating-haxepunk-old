@@ -66,7 +66,7 @@ class ImitationScene extends Scene
 		var ghost:Ghost;
 		for (i in 0...records.length) 
 		{
-			ghost = new Ghost(records[i], false);
+			ghost = new Ghost(records[i], recordingTime, false);
 			this.add(ghost);
 			ghosts.push(ghost);
 		}
@@ -130,7 +130,7 @@ class ImitationScene extends Scene
 			var ghost:Ghost; // todo: create a public var?
 			for (i in 0...records.length) 
 			{
-				ghost = new Ghost(records[i], true, false); // todo: create a starting position a little ahead in time
+				ghost = new Ghost(records[i], recordingTime, true, false); // todo: create a starting position a little ahead in time
 				this.add(ghost);
 				imitateStateAheadGhosts.push(ghost);
 			}
@@ -145,7 +145,7 @@ class ImitationScene extends Scene
 			ghostRespawnTimer = 0;
 			for (i in 0...records.length) 
 			{
-				ghost = new Ghost(records[i], true, false);
+				ghost = new Ghost(records[i], recordingTime, true, false);
 				this.add(ghost);
 				observeStateGhosts.push(ghost);
 			}
