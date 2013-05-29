@@ -30,7 +30,7 @@ class Horse extends Scene
 	public var successful:Bool;
 	private var bottomPlayerPoints:Int;
 	private var topPlayerPoints:Int;
-	public var records:Array<Array<MovementData>>;
+	public var records:Array<Array<MovementData>>; // the object belongs here and it's pointer is passed to other scenes
 	public var recordingTime:Float;
 	
 	public function new() 
@@ -87,7 +87,7 @@ class Horse extends Scene
 					changeTurns();
 					state = HorseState.creation;
 					resetVars();
-					records = new Array<Array<MovementData>>();
+					records = new Array<Array<MovementData>>(); // todo: should clear instead
 					HXP.scene = new CreationScene();
 				}
 				else {

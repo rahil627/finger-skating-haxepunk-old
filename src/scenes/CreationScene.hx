@@ -121,9 +121,7 @@ class CreationScene extends Scene
 			case CreationState.end:
 			//{ region end
 			// pass the records of all touch entities into the next state
-			//var records:Array<Array<MovementData>> = new Array<Array<MovementData>>();
 			for (i in 0...touchEntities.length) {
-				//records.push(cast(touchEntities[i], TouchEntity).record);
 				Global.horse.records.push(cast(touchEntities[i], TouchEntity).record);
 			}
 			

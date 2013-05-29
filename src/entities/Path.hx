@@ -51,7 +51,7 @@ class Path extends Entity
 			draw();
 	}
 	
-	private function draw():Void
+	private function draw():Void // todo: could draw sprite to bitmap
 	{
 		if (points.length < 2)
 			return;
