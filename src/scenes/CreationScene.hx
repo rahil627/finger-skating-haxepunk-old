@@ -22,12 +22,13 @@ enum CreationState {
  */
 class CreationScene extends Scene
 {
-	private var bottomArea:Entity;
+	private var startingArea:Entity;
 	private var touchEntities:Array<TouchEntity>;
 	private var debugText:Text;
 	private var state:CreationState;
 	private var recordingTime:Float;
 	private var turn:Turn;
+	private var reflectScene:Bool;
 
 	public function new(turn:Turn) 
 	{
@@ -35,6 +36,7 @@ class CreationScene extends Scene
 		this.turn = turn;
 		state = CreationState.begin;
 		recordingTime = 0;
+		reflectScene = (turn == Turn.topPlayer);
 	}
 	
 	override public function begin():Dynamic 
@@ -46,23 +48,21 @@ class CreationScene extends Scene
 		// add iOS debug text field
 		debugText = new Text("test");
 		this.add(new Entity(0, 100, debugText));
-		
 		debugText.text = "HXP.width: " + HXP.width +  ", HXP.height: " + HXP.height
 			+ ", HXP.screen.width: " + HXP.screen.width + "HXP.screen.height: " + HXP.screen.height;
 		
 		// add starting / ending area
-		var bottomAreaY:Int = (turn == Turn.topPlayer) ? 0 : HXP.height - Std.int(HXP.height / 10);
-		this.add(bottomArea = new Entity(0, bottomAreaY, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
-		bottomArea.setHitbox(HXP.width, Math.round(HXP.height / 10));
+		var startingAreaY:Int = (turn == Turn.topPlayer) ? 0 : HXP.height - Std.int(HXP.height / 10);
+		this.add(startingArea = new Entity(0, startingAreaY, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
+		startingArea.setHitbox(HXP.width, Math.round(HXP.height / 10));
 		
 		// add a bunch of touch entities for testing purposes
 		// in release, they are added dynamically
 		touchEntities = new Array<TouchEntity>();
 		if (!Input.multiTouchSupported) { // todo: if flash, check how to do compiler conditionals for NME
 			var touchEntity:TouchEntity;
-			var reflectRecordingPoints:Bool = (turn == Turn.topPlayer);
 			for (i in 0...5)  {
-				touchEntity = new TouchEntity((i + 1) * HXP.width / 6, bottomArea.y + bottomArea.height / 2, reflectRecordingPoints);
+				touchEntity = new TouchEntity((i + 1) * HXP.width / 6, startingArea.y + startingArea.height / 2, reflectScene);
 				touchEntities.push(touchEntity);
 				this.add(touchEntity);
 			}
@@ -73,14 +73,11 @@ class CreationScene extends Scene
 	
 	override public function update():Dynamic 
 	{	
-		// check input
-		// update entities
-		super.update();
-		
 		switch (state) 
 		{
 			case CreationState.begin:
 			//{ region begin
+			
 			// check input
 			if (Input.multiTouchSupported)
 				Input.touchPoints(handleTouchInputForBeginSubScene);
@@ -88,43 +85,31 @@ class CreationScene extends Scene
 				handleMouseInputForBeginSubScene();
 				
 			// when the player moves an entity out of the starting area, the creation state begins
-			var playerMovedTouchEntityOut:Bool = false;
-			for (i in 0...touchEntities.length) {
-				if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
-					playerMovedTouchEntityOut = true;
-					break;
-				}
-			}
-			
-			if (playerMovedTouchEntityOut) {
+			if (getPlayerMovedTouchEntityOut()) {
 				// begin create state
-				this.remove(bottomArea);
-				for (j in 0...touchEntities.length) {
-					(cast(touchEntities[j], TouchEntity)).recording = true;
+				this.remove(startingArea);
+				for (i in 0...touchEntities.length) {
+					(cast(touchEntities[i], TouchEntity)).recording = true;
 				}
 				state = CreationState.create;
 			}
+			
 			//} endregion
 			
 			case CreationState.create:
 			//{ region create
+			
 			// when the player moves all of the entities back to the starting area, the creation state ends
-			var numberOfTouchSpritesInBottomArea:Int = 0;
-			
-			for (i in 0...touchEntities.length) {
-				if ((cast(touchEntities[i], TouchEntity)).y > bottomArea.y) {
-					numberOfTouchSpritesInBottomArea++;
-				}
-			}
-			
-			if (numberOfTouchSpritesInBottomArea == touchEntities.length)
+			if (getStartingAreaContainsAllTouchEntities())
 				state = CreationState.end;
 				
 			recordingTime += HXP.elapsed;
+			
 			//} endregion
 				
 			case CreationState.end:
 			//{ region end
+			
 			// pass the records of all touch entities into the next state
 			for (i in 0...touchEntities.length) {
 				Global.horse.records.push(cast(touchEntities[i], TouchEntity).record);
@@ -135,6 +120,7 @@ class CreationScene extends Scene
 			Global.horse.recordingTime = recordingTime;
 			Global.horse.complete = true;
 			HXP.scene = Global.horse;
+			
 			//} endregion
 			
 			default: // todo: not needed?
@@ -142,26 +128,13 @@ class CreationScene extends Scene
 				
 		}
 		
+		super.update();
 	}
-	
-	// returns a new copy of records 
-	//public function copyRecords(recordsToCopy:Array<Array<MovementData>>):Array<Array<MovementData>>
-	//{
-		//var recordsCopy:Array<Array<MovementData>> = new Array<Array<MovementData>>();
-		//recordsCopy = recordsToCopy.copy;
-		//
-		//for (i in 0...records.length)  {
-			//recordsCopy[i] = records[i].copy();
-			//for (j in 0...recordsCopy[i].length) {
-				//recordsCopy[i][j] = records[i].push(records[i][j].copy);
-			//}
-		//}
-	//}
 	
 	private function handleTouchInputForBeginSubScene(touch:Touch):Void
 	{
 		if (touch.pressed) {
-			if (touch.y < bottomArea.y) {
+			if (touch.y < startingArea.y) {
 				var touchEntity:TouchEntity;
 				touchEntity = new TouchEntity(touch.x, touch.y);
 				touchEntities.push(touchEntity);
@@ -176,6 +149,44 @@ class CreationScene extends Scene
 	private function handleMouseInputForBeginSubScene():Void
 	{
 		
+	}
+	
+	private function getPlayerMovedTouchEntityOut():Bool {
+		for (i in 0...touchEntities.length) {
+			if (reflectScene) {
+				if ((cast(touchEntities[i], TouchEntity)).y > startingArea.y + startingArea.height) {
+					return true;
+				}
+			}
+			else {
+				if ((cast(touchEntities[i], TouchEntity)).y < startingArea.y) {
+					return true;
+				}
+			}
+		}
+		return false;
+		
+		//Lambda.exists(touchEntities, 
+			//function(e) { return if (cast(e, TouchEntity).y < startingArea.y { true; } else { false; } ));
+	}
+	
+	private function getStartingAreaContainsAllTouchEntities():Bool {
+		var numberOfTouchSpritesInStartingArea:Int = 0;
+		
+		for (i in 0...touchEntities.length) {
+			if (reflectScene) {
+				if ((cast(touchEntities[i], TouchEntity)).y < startingArea.y + startingArea.height) {
+					numberOfTouchSpritesInStartingArea++;
+				}
+			}
+			else {
+				if ((cast(touchEntities[i], TouchEntity)).y > startingArea.y) {
+					numberOfTouchSpritesInStartingArea++;
+				}
+			}
+		}
+		
+		return (numberOfTouchSpritesInStartingArea == touchEntities.length);
 	}
 	
 	override public function render():Dynamic 

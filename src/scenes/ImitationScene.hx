@@ -59,6 +59,7 @@ class ImitationScene extends Scene
 	{
 		super.begin();
 		
+		// add starting / ending area
 		var startingAreaY:Int = (turn == Turn.topPlayer) ? 0 : HXP.height - Std.int(HXP.height / 10);
 		this.add(startingArea = new Entity(0, startingAreaY, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
 		startingArea.setHitbox(HXP.width, Math.round(HXP.height / 10));
@@ -111,23 +112,7 @@ class ImitationScene extends Scene
 		case ImitationState.observe: 
 		//{ region observe state
 		//start once the player moves a touch sprite out of starting area
-		var playerMovedTouchEntityOut:Bool = false;
-		for (i in 0...touchEntities.length) {
-			if (reflectScene) {
-				if ((cast(touchEntities[i], TouchEntity)).y > startingArea.y + startingArea.height) {
-					playerMovedTouchEntityOut = true;
-					break;
-				}
-			}
-			else {
-				if ((cast(touchEntities[i], TouchEntity)).y < startingArea.y) {
-					playerMovedTouchEntityOut = true;
-					break;
-				}
-			}
-		}
-		
-		if (playerMovedTouchEntityOut) {
+		if (getPlayerMovedTouchEntityOut()) {
 			// begin imitate state
 			this.remove(startingArea); // todo: extra: fade out
 			
@@ -229,15 +214,15 @@ class ImitationScene extends Scene
 		//} endregion
 		
 		case ImitationState.end:
-		//{ regiong end state
-		// go to creation state on touch (or mouse click for debugging)
+		//{ region end state
 		
-		// check input
+		// go to creation state on touch (or mouse click for debugging)
 		if (Input.multiTouchSupported)
 			Input.touchPoints(handleTouchInput);
 		
 		if (Input.mouseReleased)
 			endScene();
+			
 		//} endregion
 			
 		
@@ -245,6 +230,22 @@ class ImitationScene extends Scene
 			trace("switch fail");
 		}
 		
+	}
+	
+	private function getPlayerMovedTouchEntityOut():Bool {
+		for (i in 0...touchEntities.length) {
+			if (reflectScene) {
+				if ((cast(touchEntities[i], TouchEntity)).y > startingArea.y + startingArea.height) {
+					return true;
+				}
+			}
+			else {
+				if ((cast(touchEntities[i], TouchEntity)).y < startingArea.y) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	private function handleTouchInput(touch:Touch):Void {
