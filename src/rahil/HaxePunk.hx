@@ -3,6 +3,7 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.HXP;
 import com.haxepunk.RenderMode;
 import nme.display.BitmapData;
+import nme.geom.Point;
 
 /**
  * My HaxePunk library
@@ -63,6 +64,22 @@ class HaxePunk
 		}
 		
 		return null;
+	}
+	
+	public static function reflectPointOverCenterAxes(p:Point):Point {
+		//var reflectedPoint:Point = new Point();
+		
+		if (p.x < HXP.width)
+			p.x = HXP.width / 2 + (HXP.width / 2 - p.x);
+		else if (p.x > HXP.width)
+			p.x = HXP.width / 2 - (p.x - HXP.width / 2);
+			
+		if (p.y < HXP.height)
+			p.y = HXP.height / 2 + (HXP.height / 2 - p.y);
+		else if (p.x > HXP.width)
+			p.y = HXP.height / 2 - (p.y - HXP.height / 2);
+			
+		return p;
 	}
 	
 }

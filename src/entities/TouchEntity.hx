@@ -14,19 +14,21 @@ import com.haxepunk.RenderMode;
 import rahil.HaxePunk;
 
 /**
- * ...
+ * Contains the touch sprite, input, and recording
  * @author Rahil Patel
  */
 class TouchEntity extends Entity
 {
-	private var trail:Trail;
-	private var touchID:Int;
 	public var recording:Bool;
 	public var record:Array<MovementData>;
+	
+	private var trail:Trail;
+	private var touchID:Int;
 	private var recordingTime:Float;
 	private var recordingFrame:Int;
+	private var reflect:Bool;
 
-	public function new(x:Float = 0, y:Float = 0) 
+	public function new(x:Float = 0, y:Float = 0, reflect:Bool = false) 
 	{
 		//var image:Image = new Image(Global.GRAPHIC_WHITE_PIXEL);
 		//image.scale = 25;
@@ -52,6 +54,8 @@ class TouchEntity extends Entity
 		//this.centerOrigin();
 		var mask = new Circle(ringRadius, -ringRadius, -ringRadius);
 		super(x, y, graphicList, mask);
+		
+		this.reflect = reflect;
 		
 		trail = new Trail();
 		
@@ -85,10 +89,18 @@ class TouchEntity extends Entity
 			handleMouseInput();
 			
 		// record movement
+		var reflectedPoint:Point;
+		
 		if (recording) {
 			recordingTime += HXP.elapsed;
 			recordingFrame += 1;
-			record.push(new MovementData(this.x, this.y, recordingTime, recordingFrame));
+			if (reflect) {
+				// points are always stored facing the bottom player
+				reflectedPoint = HaxePunk.reflectPointOverCenterAxes(new Point(this.x, this.y));
+				record.push(new MovementData(reflectedPoint.x, reflectedPoint.y, recordingTime, recordingFrame));
+			}
+			else
+				record.push(new MovementData(this.x, this.y, recordingTime, recordingFrame));
 		}
 		
 		// store trail points

@@ -10,7 +10,10 @@ import scenes.Horse;
  * @author Rahil Patel
  */
 class Global
-{	
+{
+	// settings
+	
+	// global vars
 	public static var mousePressedOnTouchSprite:TouchEntity;
 	//public static var game:Scene; // todo: currently unused. When there are more modes, can use this, then cast to the correct game mode.
 	public static var horse:Horse;

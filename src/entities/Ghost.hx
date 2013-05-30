@@ -19,25 +19,30 @@ import rahil.HaxePunk;
  */
 class Ghost extends Entity
 {
+	public var playing:Bool;
+	public var touching(get_touching, set_touching):Bool;
+	public var currentHitTimePercent:Float;
+	public var currentFrameHitPercent:Float;
+	
 	private var record:Array<MovementData>;
 	private var recordingTime:Float;
-	public var playing:Bool;
 	private var recordIterator:Int;
 	private var _touching:Bool;
-	public var touching(get_touching, set_touching):Bool;
 	private var currentHitTime:Float;
 	private var currentPlayTime:Float;
-	public var currentHitTimePercent:Float;
 	private var currentFrameHits:Int;
 	private var currentFrameTotal:Int;
-	public var currentFrameHitPercent:Float;
 	private var image:Image;
 	private var path:Path;
 	private var showPath:Bool;
 	//private var linearPathTween:LinearPath;
 	//private var linearPathTweenState:LinearPathTweenState;
+	private var reflect:Bool;
+	
+	// temporary variables for optimization
+	private var position:Point;
 
-	public function new(record:Array<MovementData>, recordingTime:Float, playing:Bool = true, showPath:Bool = true, startingTime:Int = 0) 
+	public function new(record:Array<MovementData>, recordingTime:Float, playing:Bool = true, showPath:Bool = true, startingTime:Int = 0, reflect:Bool = false) // todo: startingTime is unused
 	{
 		super();
 		var radius:Int = 12;
@@ -55,6 +60,7 @@ class Ghost extends Entity
 		this.recordingTime = recordingTime; // todo: currently unused
 		this.playing = playing;
 		this.showPath = showPath;
+		this.reflect = reflect;
 		
 		currentFrameHits = 0;
 		currentFrameTotal = 0;
@@ -67,8 +73,12 @@ class Ghost extends Entity
 		recordIterator++;
 		
 		path = new Path(); // todo: optimize: save sprite as bitmap and draw to screen
+		var pathPoint:Point = new Point();
 		for (i in 0...record.length) {
-			path.points.push(new Point(record[i].x, record[i].y));
+			pathPoint = new Point(record[i].x, record[i].y);
+			if (reflect)
+				pathPoint = HaxePunk.reflectPointOverCenterAxes(pathPoint);
+			path.points.push(pathPoint);
 		}
 		
 		//linearPathTween = new LinearPath(onLinearPathTweenComplete);
@@ -77,6 +87,8 @@ class Ghost extends Entity
 		//}
 		
 		//linearPathTweenState = LinearPathTweenState.stop;
+		
+		position = new Point();
 	}
 	
 	override public function added():Void 
@@ -103,9 +115,6 @@ class Ghost extends Entity
 		if (playing) {
 			currentPlayTime += HXP.elapsed;
 			
-			//recordIterator++;
-			//currentFrameTotal++;
-			
 			// old frame code
 			// remove self when done
 			if (recordIterator == Std.int(record.length)) {
@@ -113,8 +122,13 @@ class Ghost extends Entity
 				return;
 			}
 			
-			this.x = record[recordIterator].x;
-			this.y = record[recordIterator].y;
+			position.setTo(record[recordIterator].x, record[recordIterator].y);
+			
+			if (reflect)
+				position = HaxePunk.reflectPointOverCenterAxes(position);
+			
+			this.x = position.x;
+			this.y = position.y;
 			recordIterator++;
 			currentFrameTotal++;
 			

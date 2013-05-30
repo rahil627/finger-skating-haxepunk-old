@@ -8,6 +8,7 @@ import com.haxepunk.Scene;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Touch;
 import entities.TouchEntity;
+import enums.Turn;
 
 enum CreationState {
 	begin;
@@ -26,10 +27,12 @@ class CreationScene extends Scene
 	private var debugText:Text;
 	private var state:CreationState;
 	private var recordingTime:Float;
+	private var turn:Turn;
 
-	public function new() 
+	public function new(turn:Turn) 
 	{
 		super();
+		this.turn = turn;
 		state = CreationState.begin;
 		recordingTime = 0;
 	}
@@ -48,7 +51,8 @@ class CreationScene extends Scene
 			+ ", HXP.screen.width: " + HXP.screen.width + "HXP.screen.height: " + HXP.screen.height;
 		
 		// add starting / ending area
-		this.add(bottomArea = new Entity(0, HXP.height - HXP.height / 10, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
+		var bottomAreaY:Int = (turn == Turn.topPlayer) ? 0 : HXP.height - Std.int(HXP.height / 10);
+		this.add(bottomArea = new Entity(0, bottomAreaY, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
 		bottomArea.setHitbox(HXP.width, Math.round(HXP.height / 10));
 		
 		// add a bunch of touch entities for testing purposes
@@ -56,8 +60,9 @@ class CreationScene extends Scene
 		touchEntities = new Array<TouchEntity>();
 		if (!Input.multiTouchSupported) { // todo: if flash, check how to do compiler conditionals for NME
 			var touchEntity:TouchEntity;
+			var reflectRecordingPoints:Bool = (turn == Turn.topPlayer);
 			for (i in 0...5)  {
-				touchEntity = new TouchEntity((i + 1) * HXP.width / 6, bottomArea.y + bottomArea.height / 2);
+				touchEntity = new TouchEntity((i + 1) * HXP.width / 6, bottomArea.y + bottomArea.height / 2, reflectRecordingPoints);
 				touchEntities.push(touchEntity);
 				this.add(touchEntity);
 			}

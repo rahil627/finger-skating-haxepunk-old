@@ -9,6 +9,7 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Touch;
 import entities.Ghost;
 import entities.TouchEntity;
+import enums.Turn;
 
 enum ImitationState {
 	observe;
@@ -28,7 +29,7 @@ class ImitationScene extends Scene
 	private var ghosts:Array<Ghost>; // todo: rename this to mainGhosts
 	private var touchEntities:Array<TouchEntity>;
 	private var state:ImitationState;
-	private var bottomArea:Entity;
+	private var startingArea:Entity;
 	private var percentage:Entity;
 	private var percentageText:Text;
 	private var imitationTimer:Float;
@@ -36,26 +37,31 @@ class ImitationScene extends Scene
 	private var currentFrameHitPercentTotal:Float;
 	private var observeStateGhosts:Array<Ghost>;
 	private var imitateStateAheadGhosts:Array<Ghost>;
+	private var turn:Turn;
+	private var reflectScene:Bool;
 
-	public function new(records, recordingTime) 
+	public function new(records:Array<Array<MovementData>>, recordingTime:Float, turn:Turn) 
 	{
 		super();
 		this.records = records;
 		this.recordingTime = recordingTime;
+		this.turn = turn;
 		
 		ghostRespawnTimer = 11;
 		state = ImitationState.observe;
 		imitationTimer = 0;
 		currentFrameHitPercentTotal = 1;
 		winThreshold = .90;
+		reflectScene = (turn == Turn.topPlayer);
 	}
 	
 	override public function begin():Dynamic 
 	{
 		super.begin();
 		
-		// add starting / ending area
-		this.add(bottomArea = new Entity(0, HXP.screen.height - HXP.screen.height / 10, new Rect(HXP.screen.width, Math.round(HXP.screen.height / 10), 0x00FF00)));
+		var startingAreaY:Int = (turn == Turn.topPlayer) ? 0 : HXP.height - Std.int(HXP.height / 10);
+		this.add(startingArea = new Entity(0, startingAreaY, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
+		startingArea.setHitbox(HXP.width, Math.round(HXP.height / 10));
 		
 		// init ghost arrays
 		observeStateGhosts = new Array<Ghost>();
@@ -66,7 +72,7 @@ class ImitationScene extends Scene
 		var ghost:Ghost;
 		for (i in 0...records.length) 
 		{
-			ghost = new Ghost(records[i], recordingTime, false);
+			ghost = new Ghost(records[i], recordingTime, false, true, 0, reflectScene);
 			this.add(ghost);
 			ghosts.push(ghost);
 		}
@@ -78,7 +84,10 @@ class ImitationScene extends Scene
 		{
 			touchEntity = new TouchEntity();
 			touchEntity.x = records[i][0].x;
-			touchEntity.y = bottomArea.y - bottomArea.height / 2 + touchEntity.height;
+			if (reflectScene)
+				touchEntity.y = startingArea.y + startingArea.height / 2; // + touchEntity.height / 2; // todo: probably should use a line instead of area
+			else
+				touchEntity.y = startingArea.y + startingArea.height / 2 + touchEntity.height / 2;
 			this.add(touchEntity);
 			touchEntities.push(touchEntity);
 		}
@@ -104,15 +113,23 @@ class ImitationScene extends Scene
 		//start once the player moves a touch sprite out of starting area
 		var playerMovedTouchEntityOut:Bool = false;
 		for (i in 0...touchEntities.length) {
-			if ((cast(touchEntities[i], TouchEntity)).y < bottomArea.y) {
-				playerMovedTouchEntityOut = true;
-				break;
+			if (reflectScene) {
+				if ((cast(touchEntities[i], TouchEntity)).y > startingArea.y + startingArea.height) {
+					playerMovedTouchEntityOut = true;
+					break;
+				}
+			}
+			else {
+				if ((cast(touchEntities[i], TouchEntity)).y < startingArea.y) {
+					playerMovedTouchEntityOut = true;
+					break;
+				}
 			}
 		}
 		
 		if (playerMovedTouchEntityOut) {
 			// begin imitate state
-			this.remove(bottomArea); // todo: extra: fade out
+			this.remove(startingArea); // todo: extra: fade out
 			
 			for (j in 0...ghosts.length) {
 				(cast(ghosts[j], Ghost)).playing = true;
@@ -130,12 +147,13 @@ class ImitationScene extends Scene
 			var ghost:Ghost; // todo: create a public var?
 			for (i in 0...records.length) 
 			{
-				ghost = new Ghost(records[i], recordingTime, true, false); // todo: create a starting position a little ahead in time
+				ghost = new Ghost(records[i], recordingTime, true, false, 0, reflectScene); // todo: create a starting position a little ahead in time
 				this.add(ghost);
 				imitateStateAheadGhosts.push(ghost);
 			}
 			
 			state = ImitationState.imitate;
+			return;
 		}
 		
 		// play the recording indefinitely
@@ -143,9 +161,9 @@ class ImitationScene extends Scene
 		var ghost:Ghost;
 		if (ghostRespawnTimer > recordingTime + 3) {
 			ghostRespawnTimer = 0;
-			for (i in 0...records.length) 
+			for (i in 0...records.length)
 			{
-				ghost = new Ghost(records[i], recordingTime, true, false);
+				ghost = new Ghost(records[i], recordingTime, true, false, 0, reflectScene);
 				this.add(ghost);
 				observeStateGhosts.push(ghost);
 			}
@@ -183,6 +201,9 @@ class ImitationScene extends Scene
 		
 		for (i in 0...touchEntities.length) {
 			cast(ghosts[i], Ghost).touching = (cast(touchEntities[i], TouchEntity).collideWith(ghosts[i], cast(touchEntities[i], TouchEntity).x, cast(touchEntities[i], TouchEntity).y)) != null;
+			
+			if (ghosts[i].touching)
+				HXP.log("ghost is touching");
 			
 			currentFrameHitPercentSum += cast(ghosts[i], Ghost).currentFrameHitPercent;
 		}

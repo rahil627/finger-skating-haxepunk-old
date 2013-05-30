@@ -2,11 +2,7 @@ package scenes;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Scene;
-
-enum Turn {
-	bottomPlayer;
-	topPlayer;
-}
+import enums.Turn;
 
 enum HorseState {
 	start;
@@ -68,13 +64,14 @@ class Horse extends Scene
 			case HorseState.start:
 				turn = Turn.bottomPlayer;
 				state = HorseState.creation;
-				HXP.scene = new CreationScene();
+				HXP.scene = new CreationScene(turn);
 				
 			case HorseState.creation:
 				if (complete) {
+					changeTurns();
 					state = HorseState.imitation;
 					resetVars();
-					HXP.scene = new ImitationScene(records, recordingTime);
+					HXP.scene = new ImitationScene(records, recordingTime, turn);
 				}
 					
 			case HorseState.imitation:
@@ -88,13 +85,13 @@ class Horse extends Scene
 					state = HorseState.creation;
 					resetVars();
 					records = new Array<Array<MovementData>>(); // todo: should clear instead
-					HXP.scene = new CreationScene();
+					HXP.scene = new CreationScene(turn);
 				}
 				else {
 					changeTurns();
 					state = HorseState.recreation;
 					resetVars();
-					HXP.scene = new ImitationScene(records, recordingTime);
+					HXP.scene = new ImitationScene(records, recordingTime, turn);
 				}
 				
 			case HorseState.recreation:
@@ -113,10 +110,10 @@ class Horse extends Scene
 				
 				state = HorseState.creation;
 				resetVars();
-				records = new Array<Array<MovementData>>();
-				HXP.scene = new CreationScene();
+				records = new Array<Array<MovementData>>(); // todo: clear it?
+				HXP.scene = new CreationScene(turn);
 					
-			//default: // todo: learn Haxe enums
+			//default:
 				
 		}
 	}
