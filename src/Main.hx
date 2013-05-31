@@ -1,5 +1,6 @@
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
+import com.haxepunk.utils.Input;
 import scenes.Horse;
  
 class Main extends Engine {
@@ -10,6 +11,7 @@ class Main extends Engine {
     override public function init():Dynamic {
         super.init();
         HXP.console.enable();
+		Global.debugging = (!Input.multiTouchSupported);
         trace("HaxePunk is running!");
 		//HXP.screen.scale = 1;
 		HXP.scene = new Horse();
