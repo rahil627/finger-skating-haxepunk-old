@@ -10,7 +10,7 @@ enum HorseState {
 	start;
 	creation;
 	imitation;
-	recreation;
+	recreation; // todo: confusing, runs imitation scene
 }
 
 /**

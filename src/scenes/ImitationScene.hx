@@ -112,7 +112,7 @@ class ImitationScene extends Scene
 			scoreText.text = Std.string(Global.horse.topPlayerPoints) + "-" + Std.string(Global.horse.bottomPlayerPoints);
 		scoreText.scale = 3;
 		if (reflectScene)
-			scoreText.scale = 180;
+			scoreText.angle = 180;
 		var score:Entity = new Entity(0, 0, scoreText);
 		score.x = reflectScene ? HXP.width - scoreText.scaledWidth : 0;
 		score.y = reflectScene ? scoreText.scaledHeight : HXP.height - scoreText.scaledHeight;
@@ -127,7 +127,7 @@ class ImitationScene extends Scene
 		{
 		case ImitationState.observe: 
 		//{ region observe state
-		if (getPlayerMovedTouchEntityOut()) {
+		if (checkPlayerMovedTouchEntityOut()) {
 			// begin imitate state
 			this.remove(startingArea); // todo: extra: fade out
 			
@@ -135,7 +135,7 @@ class ImitationScene extends Scene
 				(cast(ghosts[j], Ghost)).playing = true;
 			}
 			
-			// todo: how to quickly clear an array?
+			// todo: clear array or create new?
 			// could clear backwards
 			// does setting to null work?
 			for (i in 0...observeStateGhosts.length) {
@@ -204,6 +204,8 @@ class ImitationScene extends Scene
 			
 			if (ghosts[i].touching)
 				HXP.log("ghost is touching");
+			else
+				HXP.log("ghost is not touching");
 			
 			currentFrameHitPercentSum += cast(ghosts[i], Ghost).currentFrameHitPercent;
 		}
@@ -218,7 +220,6 @@ class ImitationScene extends Scene
 			currentFrameHitPercentTotal = currentFrameHitPercentSum;
 		else
 			currentFrameHitPercentTotal = currentFrameHitPercentSum / ghosts.length;
-		//HXP.log(currentFrameHitPercentTotal, ghosts.length);
 		
 		percentageText.text = Std.string(currentFrameHitPercentTotal * 100).substr(0, 3) + "%"; // should be like Super Smash Bros. hit percent, or even better, a picture, a bar that fills up, no, something related to the design of the game
 		
@@ -249,7 +250,7 @@ class ImitationScene extends Scene
 		}
 	}
 	
-	private function getPlayerMovedTouchEntityOut():Bool {
+	private function checkPlayerMovedTouchEntityOut():Bool {
 		for (i in 0...touchEntities.length) {
 			if (reflectScene) {
 				if ((cast(touchEntities[i], TouchEntity)).y > startingArea.y + startingArea.height) {

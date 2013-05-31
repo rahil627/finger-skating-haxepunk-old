@@ -94,7 +94,7 @@ class CreationScene extends Scene
 			else
 				handleMouseInputForBeginSubScene();
 				
-			if (getPlayerMovedATouchEntityOut()) {
+			if (checkPlayerMovedATouchEntityOut()) {
 				// begin create state
 				this.remove(startingArea);
 				for (i in 0...touchEntities.length) {
@@ -105,7 +105,7 @@ class CreationScene extends Scene
 			
 			
 			case CreationState.create:
-			if (getStartingAreaContainsAllTouchEntities())
+			if (checkStartingAreaContainsAllTouchEntities())
 				state = CreationState.end;
 				
 			recordingTime += HXP.elapsed;
@@ -118,7 +118,6 @@ class CreationScene extends Scene
 			}
 			
 			Global.horse.recordingTime = recordingTime;
-			
 			Global.horse.complete = true;
 			HXP.scene = Global.horse;
 			
@@ -150,7 +149,7 @@ class CreationScene extends Scene
 		// todo: ?
 	}
 	
-	private function getPlayerMovedATouchEntityOut():Bool {
+	private function checkPlayerMovedATouchEntityOut():Bool {
 		for (i in 0...touchEntities.length) {
 			if (reflectScene) {
 				if ((cast(touchEntities[i], TouchEntity)).y > startingArea.y + startingArea.height) {
@@ -169,7 +168,7 @@ class CreationScene extends Scene
 			//function(e) { return if (cast(e, TouchEntity).y < startingArea.y { true; } else { false; } ));
 	}
 	
-	private function getStartingAreaContainsAllTouchEntities():Bool {
+	private function checkStartingAreaContainsAllTouchEntities():Bool {
 		var numberOfTouchSpritesInStartingArea:Int = 0;
 		
 		for (i in 0...touchEntities.length) {
