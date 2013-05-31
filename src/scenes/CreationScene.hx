@@ -76,16 +76,12 @@ class CreationScene extends Scene
 		switch (state) 
 		{
 			case CreationState.begin:
-			//{ region begin
-			
-			// check input
 			if (Input.multiTouchSupported)
 				Input.touchPoints(handleTouchInputForBeginSubScene);
 			else
 				handleMouseInputForBeginSubScene();
 				
-			// when the player moves an entity out of the starting area, the creation state begins
-			if (getPlayerMovedTouchEntityOut()) {
+			if (getPlayerMovedATouchEntityOut()) {
 				// begin create state
 				this.remove(startingArea);
 				for (i in 0...touchEntities.length) {
@@ -94,37 +90,27 @@ class CreationScene extends Scene
 				state = CreationState.create;
 			}
 			
-			//} endregion
 			
 			case CreationState.create:
-			//{ region create
-			
-			// when the player moves all of the entities back to the starting area, the creation state ends
 			if (getStartingAreaContainsAllTouchEntities())
 				state = CreationState.end;
 				
 			recordingTime += HXP.elapsed;
 			
-			//} endregion
 				
 			case CreationState.end:
-			//{ region end
-			
 			// pass the records of all touch entities into the next state
 			for (i in 0...touchEntities.length) {
 				Global.horse.records.push(cast(touchEntities[i], TouchEntity).record);
 			}
 			
-			//Global.horse.records = records;
-			//Global.horse.records = Copy.copy(records); // fail
 			Global.horse.recordingTime = recordingTime;
+			
 			Global.horse.complete = true;
 			HXP.scene = Global.horse;
 			
-			//} endregion
-			
-			default: // todo: not needed?
-				trace("switch fail");
+			default:
+				throw "switch fail";
 				
 		}
 		
@@ -148,10 +134,10 @@ class CreationScene extends Scene
 	
 	private function handleMouseInputForBeginSubScene():Void
 	{
-		
+		// todo: ?
 	}
 	
-	private function getPlayerMovedTouchEntityOut():Bool {
+	private function getPlayerMovedATouchEntityOut():Bool {
 		for (i in 0...touchEntities.length) {
 			if (reflectScene) {
 				if ((cast(touchEntities[i], TouchEntity)).y > startingArea.y + startingArea.height) {
