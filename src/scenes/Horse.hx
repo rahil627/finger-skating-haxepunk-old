@@ -56,7 +56,7 @@ class Horse extends Scene
 		//- player 2 imitates
 		//- if player 2 is successful, one point is awarded to player 2, and it is player 2's turn
 		//- else player 1 must repeat his own creation
-		//- if player 1 is successful, one point is awarded to player 1
+		//- if player 1 is successful, one point is awarded to player 1, and either goes again or becomes player 2's turn, depending on design
 		//- else player 2 is awarded one point and it becomes player 2's turn
 		
 		switch (state) 
@@ -70,7 +70,7 @@ class Horse extends Scene
 				if (complete) {
 					changeTurns();
 					state = HorseState.imitation;
-					resetVars();
+					complete = false;
 					HXP.scene = new ImitationScene(records, recordingTime, turn);
 				}
 					
@@ -81,16 +81,18 @@ class Horse extends Scene
 				if (successful) {
 					awardPointToCurrentPlayer();
 					checkIfGameIsOver();
-					changeTurns();
+					//changeTurns(); // todo: design: winning player goes again
 					state = HorseState.creation;
-					resetVars();
+					complete = false;
+					successful = false;
 					records = new Array<Array<MovementData>>(); // todo: should clear instead
 					HXP.scene = new CreationScene(turn);
 				}
 				else {
 					changeTurns();
 					state = HorseState.recreation;
-					resetVars();
+					complete = false;
+					successful = false;
 					HXP.scene = new ImitationScene(records, recordingTime, turn);
 				}
 				
@@ -109,7 +111,8 @@ class Horse extends Scene
 				}
 				
 				state = HorseState.creation;
-				resetVars();
+				complete = false;
+				successful = false;
 				records = new Array<Array<MovementData>>(); // todo: clear it?
 				HXP.scene = new CreationScene(turn);
 					
@@ -146,10 +149,5 @@ class Horse extends Scene
 			Global.horse = null;
 			HXP.scene = new GameOver(topPlayerWon);
 		}
-	}
-	
-	private function resetVars():Void {
-		complete = false;
-		successful = false;
 	}
 }
