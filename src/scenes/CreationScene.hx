@@ -82,6 +82,18 @@ class CreationScene extends Scene
 		var score:Entity = new Entity(0, 0, scoreText);
 		score.y = reflectScene ? scoreText.scaledHeight : HXP.height - scoreText.scaledHeight;
 		this.add(score);
+		
+		// add directions
+		var directionsText:Text = new Text("it's your turn to create");
+		if (reflectScene)
+			directionsText.angle = 180;
+		var directions:Entity = new Entity(0, 0, directionsText);
+		if (reflectScene)
+			directions.x = HXP.width / 2 + directionsText.width / 2;
+		else
+			directions.x = HXP.width / 2 - directionsText.width / 2;
+		directions.y = HXP.height / 2 - directionsText.height / 2;
+		this.add(directions);
 	}
 	
 	override public function update():Dynamic 
