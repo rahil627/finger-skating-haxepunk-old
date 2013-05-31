@@ -87,12 +87,13 @@ class CreationScene extends Scene
 		var directionsText:Text = new Text("it's your turn to create");
 		if (reflectScene)
 			directionsText.angle = 180;
+		directionsText.centerOrigin();
 		directions = new Entity(0, 0, directionsText);
 		if (reflectScene)
-			directions.x = HXP.width / 2 + directionsText.width / 2;
+			directions.x = HXP.width / 2;
 		else
-			directions.x = HXP.width / 2 - directionsText.width / 2;
-		directions.y = HXP.height / 2 - directionsText.height / 2;
+			directions.x = HXP.width / 2;
+		directions.y = HXP.height / 2;
 		this.add(directions);
 	}
 	

@@ -39,7 +39,8 @@ class ImitationScene extends Scene
 	private var imitateStateAheadGhosts:Array<Ghost>;
 	private var turn:Turn;
 	private var reflectScene:Bool;
-	var directions:Entity;
+	private var directions:Entity;
+	private var waitForMouseReleaseTwice:Bool;
 
 	public function new(records:Array<Array<MovementData>>, recordingTime:Float, turn:Turn) 
 	{
@@ -123,12 +124,13 @@ class ImitationScene extends Scene
 		var directionsText:Text = new Text("it's your turn to imitate");
 		if (reflectScene)
 			directionsText.angle = 180;
+		directionsText.centerOrigin();
 		directions = new Entity(0, 0, directionsText);
 		if (reflectScene)
-			directions.x = HXP.width / 2 + directionsText.width / 2;
+			directions.x = HXP.width / 2;
 		else
-			directions.x = HXP.width / 2 - directionsText.width / 2;
-		directions.y = HXP.height / 2 - directionsText.height / 2;
+			directions.x = HXP.width / 2;
+		directions.y = HXP.height / 2;
 		this.add(directions);
 	}
 	
@@ -201,8 +203,12 @@ class ImitationScene extends Scene
 			// indicate win or lose
 			var successfulText = new Text(successful ? "SUCCESS" : "FAIL");
 			successfulText.scale = 5;
+			if (reflectScene)
+				successfulText.angle = 180;
 			successfulText.centerOrigin();
-			this.add(new Entity(HXP.width / 2, HXP.height / 2));
+			this.add(new Entity(HXP.width / 2, HXP.height / 2, successfulText));
+			
+			waitForMouseReleaseTwice = Input.mouseDown; // todo: bug: two frame thingy
 			
 			return;
 		}
@@ -250,11 +256,16 @@ class ImitationScene extends Scene
 		//{ region end state
 		
 		// go to creation state on touch (or mouse click for debugging)
-		if (Input.multiTouchSupported)
+		if (Input.multiTouchSupported) {
 			Input.touchPoints(handleTouchInput);
-		
-		if (Input.mouseReleased)
+		}
+		else if (Input.mouseReleased) {
+			if (waitForMouseReleaseTwice) {
+				waitForMouseReleaseTwice = false;
+				return;
+			}
 			endScene();
+		}
 			
 		//} endregion
 			
