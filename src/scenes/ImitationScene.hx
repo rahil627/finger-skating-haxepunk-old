@@ -60,7 +60,7 @@ class ImitationScene extends Scene
 		super.begin();
 		
 		// add starting / ending area
-		var startingAreaY:Int = (turn == Turn.topPlayer) ? 0 : HXP.height - Std.int(HXP.height / 10);
+		var startingAreaY:Int = reflectScene ? 0 : HXP.height - Std.int(HXP.height / 10);
 		this.add(startingArea = new Entity(0, startingAreaY, new Rect(HXP.width, Math.round(HXP.height / 10), 0x00FF00)));
 		startingArea.setHitbox(HXP.width, Math.round(HXP.height / 10));
 		
@@ -96,10 +96,12 @@ class ImitationScene extends Scene
 		// add percentage at the bottom
 		percentageText = new Text("000%"); // set the width of the text
 		percentageText.text = "0%";
-		percentageText.scale = 5;
+		percentageText.scale = 4;
+		if (reflectScene)
+			percentageText.angle = 180;
 		percentage = new Entity(0, 0, percentageText);
 		percentage.x = HXP.width / 2 + 25;
-		percentage.y = HXP.height - percentageText.scaledHeight;
+		percentage.y = reflectScene ? percentageText.scaledHeight : HXP.height - percentageText.scaledHeight;
 		this.add(percentage);
 	}
 	
@@ -111,7 +113,6 @@ class ImitationScene extends Scene
 		{
 		case ImitationState.observe: 
 		//{ region observe state
-		//start once the player moves a touch sprite out of starting area
 		if (getPlayerMovedTouchEntityOut()) {
 			// begin imitate state
 			this.remove(startingArea); // todo: extra: fade out
@@ -226,10 +227,9 @@ class ImitationScene extends Scene
 		//} endregion
 			
 		
-		default: // todo: not needed? Check HaXe syntax web page
-			trace("switch fail");
+		default:
+			throw "switch fail";
 		}
-		
 	}
 	
 	private function getPlayerMovedTouchEntityOut():Bool {
