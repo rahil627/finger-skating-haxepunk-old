@@ -29,6 +29,7 @@ class CreationScene extends Scene
 	private var recordingTime:Float;
 	private var turn:Turn;
 	private var reflectScene:Bool;
+	var directions:Entity;
 
 	public function new(turn:Turn) 
 	{
@@ -87,7 +88,7 @@ class CreationScene extends Scene
 		var directionsText:Text = new Text("it's your turn to create");
 		if (reflectScene)
 			directionsText.angle = 180;
-		var directions:Entity = new Entity(0, 0, directionsText);
+		directions = new Entity(0, 0, directionsText);
 		if (reflectScene)
 			directions.x = HXP.width / 2 + directionsText.width / 2;
 		else
@@ -109,6 +110,7 @@ class CreationScene extends Scene
 			if (checkPlayerMovedATouchEntityOut()) {
 				// begin create state
 				this.remove(startingArea);
+				this.remove(directions);
 				for (i in 0...touchEntities.length) {
 					(cast(touchEntities[i], TouchEntity)).recording = true;
 				}

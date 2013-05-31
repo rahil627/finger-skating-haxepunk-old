@@ -39,6 +39,7 @@ class ImitationScene extends Scene
 	private var imitateStateAheadGhosts:Array<Ghost>;
 	private var turn:Turn;
 	private var reflectScene:Bool;
+	var directions:Entity;
 
 	public function new(records:Array<Array<MovementData>>, recordingTime:Float, turn:Turn) 
 	{
@@ -122,7 +123,7 @@ class ImitationScene extends Scene
 		var directionsText:Text = new Text("it's your turn to imitate");
 		if (reflectScene)
 			directionsText.angle = 180;
-		var directions:Entity = new Entity(0, 0, directionsText);
+		directions = new Entity(0, 0, directionsText);
 		if (reflectScene)
 			directions.x = HXP.width / 2 + directionsText.width / 2;
 		else
@@ -142,6 +143,7 @@ class ImitationScene extends Scene
 		if (checkPlayerMovedTouchEntityOut()) {
 			// begin imitate state
 			this.remove(startingArea); // todo: extra: fade out
+			this.remove(directions);
 			
 			for (j in 0...ghosts.length) {
 				(cast(ghosts[j], Ghost)).playing = true;
