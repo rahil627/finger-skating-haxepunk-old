@@ -121,8 +121,8 @@ class Horse extends Scene
 				records = new Array<Array<MovementData>>(); // todo: clear it?
 				HXP.scene = new CreationScene(turn);
 					
-			//default:
-				
+			default:
+				throw "switch fail";
 		}
 	}
 	

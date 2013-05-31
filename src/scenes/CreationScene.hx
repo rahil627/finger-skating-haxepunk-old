@@ -131,6 +131,8 @@ class CreationScene extends Scene
 				Global.horse.records.push(cast(touchEntities[i], TouchEntity).record);
 			}
 			
+			
+			this.removeAll(); // todo: need to call this to trigger removed to remove flash sprites
 			Global.horse.recordingTime = recordingTime;
 			Global.horse.complete = true;
 			HXP.scene = Global.horse;

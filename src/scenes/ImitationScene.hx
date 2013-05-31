@@ -297,6 +297,7 @@ class ImitationScene extends Scene
 	}
 	
 	private function endScene():Void {
+		this.removeAll(); // todo: need to call this to trigger removed to remove flash sprites
 		Global.horse.complete = true;
 		HXP.scene = Global.horse;
 	}

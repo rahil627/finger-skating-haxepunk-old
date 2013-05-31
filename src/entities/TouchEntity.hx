@@ -75,7 +75,7 @@ class TouchEntity extends Entity
 		HXP.scene.add(trail);
 	}
 	
-	override public function removed():Void 
+	override public function removed():Void
 	{
 		HXP.scene.remove(trail);
 		super.removed();
