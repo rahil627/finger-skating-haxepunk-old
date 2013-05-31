@@ -82,7 +82,8 @@ class Horse extends Scene
 				
 				if (successful) {
 					awardPointToCurrentPlayer();
-					checkIfGameIsOver();
+					if (checkIfGameIsOver())
+						return;
 					//changeTurns(); // todo: design: winning player goes again
 					state = HorseState.creation;
 					complete = false;
@@ -104,12 +105,14 @@ class Horse extends Scene
 					
 				if (successful) {
 					awardPointToCurrentPlayer();
-					checkIfGameIsOver();
+					if (checkIfGameIsOver())
+						return;
 					//changeTurns(); // todo: design: winning player goes again
 				}
 				else {
 					awardPointToOtherPlayer();
-					checkIfGameIsOver();
+					if (checkIfGameIsOver())
+						return;
 				}
 				
 				state = HorseState.creation;
@@ -124,7 +127,7 @@ class Horse extends Scene
 	}
 	
 	private function changeTurns():Void {
-		if (turn == Turn.bottomPlayer) // todo: may have to use Type.enumEq
+		if (turn == Turn.bottomPlayer) // todo: remember to use Type.enumEq
 			turn = Turn.topPlayer;
 		else
 			turn = Turn.bottomPlayer;
@@ -144,13 +147,14 @@ class Horse extends Scene
 			bottomPlayerPoints += 1;
 	}
 	
-	private function checkIfGameIsOver():Void {
+	private function checkIfGameIsOver():Bool {
 		if (bottomPlayerPoints >= 3 || topPlayerPoints >= 3) {
 			var topPlayerWon:Bool = topPlayerPoints >= 3;
-			//Global.game = null; // todo: unsure if nulling a pointer a works
 			Global.horse = null;
 			HXP.scene = new GameOver(topPlayerWon);
+			return true;
 		}
+		return false;
 	}
 	
 }
