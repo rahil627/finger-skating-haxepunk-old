@@ -103,6 +103,20 @@ class ImitationScene extends Scene
 		percentage.x = HXP.width / 2 + 25;
 		percentage.y = reflectScene ? percentageText.scaledHeight : HXP.height - percentageText.scaledHeight;
 		this.add(percentage);
+		
+		// add score
+		var scoreText:Text = new Text("0-0"); // set the width of the text
+		if (reflectScene)
+			scoreText.text = Std.string(Global.horse.bottomPlayerPoints) + "-" + Std.string(Global.horse.topPlayerPoints); // todo: could pass in horse reference rather than using global
+		else
+			scoreText.text = Std.string(Global.horse.topPlayerPoints) + "-" + Std.string(Global.horse.bottomPlayerPoints);
+		scoreText.scale = 3;
+		if (reflectScene)
+			scoreText.scale = 180;
+		var score:Entity = new Entity(0, 0, scoreText);
+		score.x = reflectScene ? HXP.width - scoreText.scaledWidth : 0;
+		score.y = reflectScene ? scoreText.scaledHeight : HXP.height - scoreText.scaledHeight;
+		this.add(score);
 	}
 	
 	override public function update():Dynamic 

@@ -69,6 +69,19 @@ class CreationScene extends Scene
 		}
 		
 		//this.getClass(TouchEntity, touchEntities); // probably does not work until the next frame
+		
+		// add score
+		var scoreText:Text = new Text("");
+		if (reflectScene)
+			scoreText.text = Std.string(Global.horse.bottomPlayerPoints) + "-" + Std.string(Global.horse.topPlayerPoints); // todo: could pass in horse reference rather than using global
+		else
+			scoreText.text = Std.string(Global.horse.topPlayerPoints) + "-" + Std.string(Global.horse.bottomPlayerPoints);
+		scoreText.scale = 3;
+		if (reflectScene)
+			scoreText.scale = 180;
+		var score:Entity = new Entity(0, 0, scoreText);
+		score.y = reflectScene ? scoreText.scaledHeight : HXP.height - scoreText.scaledHeight;
+		this.add(score);
 	}
 	
 	override public function update():Dynamic 

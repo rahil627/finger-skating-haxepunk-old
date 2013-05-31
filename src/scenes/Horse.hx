@@ -1,5 +1,7 @@
 package scenes;
 
+import com.haxepunk.Entity;
+import com.haxepunk.graphics.Text;
 import com.haxepunk.HXP;
 import com.haxepunk.Scene;
 import enums.Turn;
@@ -24,8 +26,8 @@ class Horse extends Scene
 	private var state:HorseState;
 	public var complete:Bool;
 	public var successful:Bool;
-	private var bottomPlayerPoints:Int;
-	private var topPlayerPoints:Int;
+	public var bottomPlayerPoints:Int;
+	public var topPlayerPoints:Int;
 	public var records:Array<Array<MovementData>>; // the object belongs here and it's pointer is passed to other scenes
 	public var recordingTime:Float;
 	
@@ -38,7 +40,7 @@ class Horse extends Scene
 		topPlayerPoints = 0;
 		records = new Array<Array<MovementData>>();
 		state = HorseState.start;
-
+		
 		//Global.game = this;
 		Global.horse = this;
 	}
@@ -150,4 +152,5 @@ class Horse extends Scene
 			HXP.scene = new GameOver(topPlayerWon);
 		}
 	}
+	
 }
