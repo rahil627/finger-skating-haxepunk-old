@@ -59,7 +59,7 @@ class CreationScene extends Scene
 		// add a bunch of touch entities for testing purposes
 		// in release, they are added dynamically
 		touchEntities = new Array<TouchEntity>();
-		if (!Input.multiTouchSupported) { // todo: if flash, check how to do compiler conditionals for NME
+		if (Global.debugging) {
 			var touchEntity:TouchEntity;
 			for (i in 0...5)  {
 				touchEntity = new TouchEntity((i + 1) * HXP.width / 6, startingArea.y + startingArea.height / 2, reflectScene);
