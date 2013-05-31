@@ -49,8 +49,7 @@ class CreationScene extends Scene
 		// add iOS debug text field
 		debugText = new Text("test");
 		this.add(new Entity(0, 100, debugText));
-		debugText.text = "HXP.width: " + HXP.width +  ", HXP.height: " + HXP.height
-			+ ", HXP.screen.width: " + HXP.screen.width + "HXP.screen.height: " + HXP.screen.height;
+		debugText.text = "";
 		
 		// add starting / ending area
 		var startingAreaY:Int = (turn == Turn.topPlayer) ? 0 : HXP.height - Std.int(HXP.height / 10);
