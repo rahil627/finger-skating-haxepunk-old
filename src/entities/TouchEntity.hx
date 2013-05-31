@@ -27,6 +27,9 @@ class TouchEntity extends Entity
 	private var recordingTime:Float;
 	private var recordingFrame:Int;
 	private var reflect:Bool;
+	
+	// optimization vars
+	private var reflectedPoint:Point;
 
 	public function new(x:Float = 0, y:Float = 0, reflect:Bool = false) 
 	{
@@ -89,8 +92,6 @@ class TouchEntity extends Entity
 			handleMouseInput();
 			
 		// record movement
-		var reflectedPoint:Point;
-		
 		if (recording) {
 			recordingTime += HXP.elapsed;
 			recordingFrame += 1;
