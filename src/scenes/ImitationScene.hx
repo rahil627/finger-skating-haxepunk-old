@@ -86,9 +86,9 @@ class ImitationScene extends Scene
 			touchEntity = new TouchEntity();
 			touchEntity.x = records[i][0].x;
 			if (reflectScene)
-				touchEntity.y = startingArea.y + startingArea.height / 2; // + touchEntity.height / 2; // todo: probably should use a line instead of area
+				touchEntity.y = startingArea.y + startingArea.height / 2; // todo: probably should use a line instead of area
 			else
-				touchEntity.y = startingArea.y + startingArea.height / 2 + touchEntity.height / 2;
+				touchEntity.y = startingArea.y + startingArea.height / 2;
 			this.add(touchEntity);
 			touchEntities.push(touchEntity);
 		}
