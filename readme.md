@@ -1,4 +1,4 @@
-this is basically HORSE the basketball game for iPad. Players take turns drawing things (using the iPad's multi-touch input) and imitating each other. But, the drawing is linked with time, so it becomes more of a 'monkey see monkey do' dance.
+this is basically HORSE the basketball game for iPad. Players take turns drawing things (using the iPad's multi-touch input) and imitating each other. But, since the drawing part is linked with time, it feels like more of a dance, a dance imitation game.
 
 it's still a cool, simple fun idea!
 
