@@ -2,4 +2,4 @@ this is basically HORSE the basketball game for iPad. Players take turns drawing
 
 it's still a cool, simple fun idea!
 
-this was also the first time I used HaxePunk and AIR. I believe I ran into problems of using the drawing class to draw primitives directly to iOS (OpenGL ES)... but I don't quite remember.
+this was also the first time I used HaxePunk and AIR. I believe I still ran into problems of using OpenFL's drawing class to draw primitives to iOS (OpenGL ES)... but I don't quite remember. Anyway, I remember the experience being a million times better than Cocos2D.
